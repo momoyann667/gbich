@@ -144,7 +144,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
       if (onExplore) {
         onExplore();
       } else if (navigation?.navigate) {
-        navigation.navigate('MainTabs');
+        navigation.navigate('Onboarding');
       }
     });
   };
