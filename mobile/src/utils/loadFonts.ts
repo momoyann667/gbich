@@ -85,6 +85,36 @@ export function injectWebFonts() {
       .gbich-btn-press:active {
         transform: translate(1px, 2px) !important;
       }
+      @keyframes redSignalBlink {
+        0%, 100% {
+          background-color: #F5222D;
+          box-shadow: 0 0 10px rgba(245, 34, 45, 0.95), 0 0 18px rgba(245, 34, 45, 0.5);
+          opacity: 1;
+        }
+        50% {
+          background-color: #ff525d;
+          box-shadow: 0 0 3px rgba(245, 34, 45, 0.35);
+          opacity: 0.45;
+        }
+      }
+      .gbich-red-signal-blink {
+        animation: redSignalBlink 0.85s ease-in-out infinite !important;
+      }
+      @keyframes spin3D {
+        0% {
+          transform: rotateY(0deg) rotateZ(0deg) scale(1);
+        }
+        50% {
+          transform: rotateY(180deg) rotateZ(10deg) scale(1.08);
+        }
+        100% {
+          transform: rotateY(360deg) rotateZ(0deg) scale(1);
+        }
+      }
+      .gbich-sphere-3d-rotating {
+        animation: spin3D 4s ease-in-out infinite !important;
+        transform-style: preserve-3d;
+      }
     `;
     document.head.appendChild(style);
   }

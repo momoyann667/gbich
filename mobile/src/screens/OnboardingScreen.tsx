@@ -62,6 +62,79 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
     }).start();
   };
 
+  // Animation de clignotement / lumière rouge continue pour le segment actif
+  const progressBlinkAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    const blinkLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(progressBlinkAnim, {
+          toValue: 0.35,
+          duration: 450,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
+        }),
+        Animated.timing(progressBlinkAnim, {
+          toValue: 1,
+          duration: 450,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: false,
+        }),
+      ])
+    );
+    blinkLoop.start();
+    return () => blinkLoop.stop();
+  }, [progressBlinkAnim]);
+
+  // Animations Étape 3 : Rotation 3D continue et pulsation de la sphère à trame
+  const sphereRotateAnim = useRef(new Animated.Value(0)).current;
+  const spherePulseAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const rotateLoop = Animated.loop(
+      Animated.timing(sphereRotateAnim, {
+        toValue: 1,
+        duration: 4000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    const pulseLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(spherePulseAnim, {
+          toValue: 1,
+          duration: 900,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.timing(spherePulseAnim, {
+          toValue: 0,
+          duration: 900,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+
+    rotateLoop.start();
+    pulseLoop.start();
+
+    return () => {
+      rotateLoop.stop();
+      pulseLoop.stop();
+    };
+  }, [sphereRotateAnim, spherePulseAnim]);
+
+  const sphereRotation = sphereRotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const sphereScale = spherePulseAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.95, 1.08],
+  });
+
   // Re-déclenche l'animation d'apparition à chaque changement d'étape
   useEffect(() => {
     fadeAnim.setValue(0);
@@ -242,7 +315,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
           <View style={styles.topHeader}>
             <Image
               source={require('../../assets/logo.png')}
-              style={styles.headerLogo}
+              style={styles.headerLogo as any}
               resizeMode="contain"
             />
 
@@ -263,33 +336,50 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
           {/* 2. BARRE DE PROGRESSION SEGMENTÉE (3 ÉTAPES)              */}
           {/* ========================================================= */}
           <View style={styles.segmentedProgressRow}>
-            {/* Segment 1 : validé en noir quand currentStep >= 2 */}
-            <View
+            {/* Segment 1 : clignote rouge tout le temps à l'étape 1, validé en noir ensuite */}
+            <Animated.View
               style={[
                 styles.progressSegment,
                 currentStep > 1
                   ? styles.segmentCompleted
                   : currentStep === 1
-                  ? styles.segmentActive
+                  ? [
+                      styles.segmentActive,
+                      { opacity: progressBlinkAnim },
+                      Platform.OS === 'web' &&
+                        ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
+                    ]
                   : styles.segmentInactive,
               ]}
             />
-            {/* Segment 2 : actif en rouge vif #F5222D à l'Étape 2 */}
-            <View
+            {/* Segment 2 : inactif à l'étape 1, clignote rouge tout le temps à l'étape 2, validé en noir ensuite */}
+            <Animated.View
               style={[
                 styles.progressSegment,
                 currentStep > 2
                   ? styles.segmentCompleted
                   : currentStep === 2
-                  ? styles.segmentActive
+                  ? [
+                      styles.segmentActive,
+                      { opacity: progressBlinkAnim },
+                      Platform.OS === 'web' &&
+                        ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
+                    ]
                   : styles.segmentInactive,
               ]}
             />
-            {/* Segment 3 */}
-            <View
+            {/* Segment 3 : inactif aux étapes 1 & 2, clignote rouge tout le temps à l'étape 3 */}
+            <Animated.View
               style={[
                 styles.progressSegment,
-                currentStep === 3 ? styles.segmentActive : styles.segmentInactive,
+                currentStep === 3
+                  ? [
+                      styles.segmentActive,
+                      { opacity: progressBlinkAnim },
+                      Platform.OS === 'web' &&
+                        ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
+                    ]
+                  : styles.segmentInactive,
               ]}
             />
           </View>
@@ -316,7 +406,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                 <View style={styles.comicInnerFrame}>
                   <Image
                     source={require('../../assets/image_onboarding_1.png')}
-                    style={styles.illustrationImageCover}
+                    style={styles.illustrationImageCover as any}
                     resizeMode="cover"
                   />
 
@@ -405,7 +495,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                     <Animated.Image
                       source={require('../../assets/image_onboarding_2.png')}
                       style={[
-                        styles.cauphyCharacterImage,
+                        styles.cauphyCharacterImage as any,
                         { transform: [{ rotate: characterRotate }] },
                       ]}
                       resizeMode="contain"
@@ -506,13 +596,60 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                   style={styles.panelSphereTopRight}
                 />
 
-                {/* Cadre BD de l'image de jeux & quiz */}
+                {/* Cadre BD de l'image de jeux & quiz avec sphère 3D animée et lignes manga */}
                 <View style={styles.comicInnerFrame}>
                   <Image
                     source={require('../../assets/image_onboarding_3.png')}
-                    style={styles.illustrationImageCover}
+                    style={styles.illustrationImageCover as any}
                     resizeMode="cover"
                   />
+
+                  {/* Lignes de vitesse manga et halo sombre radial au cœur de la case */}
+                  <View
+                    pointerEvents="none"
+                    style={[
+                      styles.mangaSpeedLinesOverlay,
+                      Platform.OS === 'web' && (webIllustrationStyles.mangaDarkRadial as any),
+                    ]}
+                  >
+                    {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map(
+                      (deg) => (
+                        <View
+                          key={`manga-speed-${deg}`}
+                          style={[
+                            styles.mangaSpeedRay,
+                            { transform: [{ rotate: `${deg}deg` }] },
+                          ]}
+                        />
+                      )
+                    )}
+                  </View>
+
+                  {/* Sphère à trame halftone rouge/orange : rotation 3D continue & pulsation */}
+                  <Animated.View
+                    style={[
+                      styles.halftoneHeroSphere,
+                      {
+                        transform: [
+                          { rotate: sphereRotation },
+                          { scale: sphereScale },
+                        ],
+                      },
+                      Platform.OS === 'web' &&
+                        ([webIllustrationStyles.halftoneOrangeRedSphere, webIllustrationStyles.webSphereRotating3D] as any),
+                    ]}
+                  >
+                    {/* Texture micro-points halftone */}
+                    <View
+                      style={[
+                        styles.sphereHalftoneDots,
+                        Platform.OS === 'web' &&
+                          (webIllustrationStyles.sphereDotGrid as any),
+                      ]}
+                    />
+                    {/* Éclat spéculaire laqué 3D */}
+                    <View style={styles.sphereSpecularGlint} />
+                  </Animated.View>
 
                   {/* Sticker TCHÊÊ ! 🔥 en haut à gauche */}
                   <View style={styles.tcheeSticker}>
@@ -1420,6 +1557,56 @@ const styles = StyleSheet.create({
     paddingTop: 3,
     paddingBottom: 2,
   },
+  segmentActiveWebPulse: {
+    boxShadow: '0 0 10px rgba(245, 34, 45, 0.95), 0 0 18px rgba(245, 34, 45, 0.5)',
+  },
+  halftoneHeroSphere: {
+    position: 'absolute',
+    top: '14%',
+    right: '10%',
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    backgroundColor: '#F5222D',
+    borderWidth: 2,
+    borderColor: '#171416',
+    zIndex: 13,
+    overflow: 'hidden',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#171416',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 0.8,
+    shadowRadius: 0,
+    elevation: 5,
+  },
+  mangaSpeedLinesOverlay: {
+    ...StyleSheet.absoluteFill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 10,
+    pointerEvents: 'none',
+  },
+  mangaSpeedRay: {
+    position: 'absolute',
+    width: 500,
+    height: 1.5,
+    backgroundColor: 'rgba(23, 20, 22, 0.22)',
+  },
+  sphereHalftoneDots: {
+    ...StyleSheet.absoluteFill,
+    opacity: 0.35,
+  },
+  sphereSpecularGlint: {
+    position: 'absolute',
+    top: 6,
+    left: 8,
+    width: 18,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    transform: [{ rotate: '-25deg' }],
+  },
 });
 
 const webIllustrationStyles = {
@@ -1434,6 +1621,26 @@ const webIllustrationStyles = {
   },
   tactileNextBtn: {
     boxShadow: '5px 5px 0px #171416',
+  },
+  halftoneOrangeRedSphere: {
+    background:
+      'radial-gradient(circle at 35% 28%, #FFA940 0%, #FF5A1F 28%, #F5222D 58%, #8B0010 85%, #2A0408 100%)',
+    boxShadow:
+      '0 8px 18px rgba(245, 34, 45, 0.6), inset -3px -3px 8px rgba(42, 4, 8, 0.7), inset 2px 2px 5px rgba(255, 255, 255, 0.85)',
+  },
+  webSphereRotating3D: {
+    animation: 'spin3D 4s ease-in-out infinite',
+  },
+  segmentActiveWebBlink: {
+    animation: 'redSignalBlink 0.85s ease-in-out infinite',
+  },
+  sphereDotGrid: {
+    backgroundImage: 'radial-gradient(#171416 1px, transparent 1px)',
+    backgroundSize: '6px 6px',
+  },
+  mangaDarkRadial: {
+    background:
+      'radial-gradient(circle at 75% 30%, rgba(245, 34, 45, 0.12) 0%, rgba(23, 20, 22, 0.35) 75%, rgba(23, 20, 22, 0.55) 100%)',
   },
 };
 
