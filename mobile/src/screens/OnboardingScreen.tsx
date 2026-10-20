@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
 import { ThreeDSphere } from '../components/common/ThreeDSphere';
-import { GBICH_COLORS } from '../theme/tokens';
 import { injectWebFonts } from '../utils/loadFonts';
 
 interface OnboardingScreenProps {
@@ -33,7 +32,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
 
   // Animations
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(20)).current;
+  const slideAnim = useRef(new Animated.Value(15)).current;
   const hopAnim = useRef(new Animated.Value(0)).current;
   const btnScaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -42,13 +41,13 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 600,
+        duration: 500,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 600,
+        duration: 500,
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
@@ -118,6 +117,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        bounces={false}
       >
         <Animated.View
           style={[
@@ -129,198 +129,199 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
           ]}
         >
           {/* ========================================================= */}
-          {/* 1. BARRE SUPÉRIEURE : LOGO GBICH! & BOUTON PASSER         */}
+          {/* SECTION SUPÉRIEURE : HEADER, PROGRESSION & CASE BD        */}
           {/* ========================================================= */}
-          <View style={styles.topHeader}>
-            <Image
-              source={require('../../assets/logo.png')}
-              style={styles.headerLogo}
-              resizeMode="contain"
-            />
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={handleSkip}
-              style={[styles.skipButton, Platform.OS === 'web' && ({ cursor: 'pointer' } as any)]}
-            >
-              <Text style={styles.skipText}>PASSER</Text>
-              <Text style={styles.skipArrow}>➔</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* ========================================================= */}
-          {/* 2. BARRE DE PROGRESSION SEGMENTÉE (3 ÉTAPES)              */}
-          {/* ========================================================= */}
-          <View style={styles.segmentedProgressRow}>
-            <View
-              style={[
-                styles.progressSegment,
-                currentStep >= 1 ? styles.segmentActive : styles.segmentInactive,
-              ]}
-            />
-            <View
-              style={[
-                styles.progressSegment,
-                currentStep >= 2 ? styles.segmentActive : styles.segmentInactive,
-              ]}
-            />
-            <View
-              style={[
-                styles.progressSegment,
-                currentStep >= 3 ? styles.segmentActive : styles.segmentInactive,
-              ]}
-            />
-          </View>
-
-          {/* ========================================================= */}
-          {/* 3. CASE DE BANDE DESSINÉE PRINCIPALE (ÉTAPE 01)          */}
-          {/* ========================================================= */}
-          <View style={styles.comicStepWrapper}>
-            {/* Tag Étape au-dessus de la case */}
-            <View style={styles.stepTagBadge}>
-              <Text style={styles.stepTagText}>ÉTAPE 01 • CARICATURES & STRIPS</Text>
-            </View>
-
-            {/* Cadre de la case BD avec illustration */}
-            <View style={styles.comicPanelCard}>
-              {/* Sphère 3D rouge en accent chevauchant le coin supérieur droit */}
-              <ThreeDSphere
-                size={34}
-                colorVariant="red"
-                floatDistance={5}
-                floatDuration={2200}
-                style={styles.panelSphere}
+          <View style={styles.topSection}>
+            {/* 1. Barre supérieure : Logo GBICH! & Bouton Passer */}
+            <View style={styles.topHeader}>
+              <Image
+                source={require('../../assets/logo.png')}
+                style={styles.headerLogo}
+                resizeMode="contain"
               />
 
-              {/* Conteneur de l'image de l'atelier */}
-              <View style={styles.illustrationWrapper}>
-                <Image
-                  source={require('../../assets/image_onboarding_1.png')}
-                  style={styles.illustrationImage}
-                  resizeMode="cover"
-                />
-
-                {/* Cartouche dynamique "Y'A PAS DRAP ! ⚡" avec animation de sautillement */}
-                <Animated.View
-                  style={[
-                    styles.drapCartouche,
-                    {
-                      transform: [{ translateY: hopAnim }],
-                    },
-                  ]}
-                >
-                  <Text style={styles.drapText}>Y'A PAS DRAP ! ⚡</Text>
-                </Animated.View>
-
-                {/* Sticker Onomatopée "KPAN !" en bas à droite */}
-                <View style={styles.kpanSticker}>
-                  <Text style={styles.kpanText}>KPAN !</Text>
-                </View>
-              </View>
-
-              {/* Contenu textuel sous l'illustration (Règle 70/30) */}
-              <View style={styles.cardTextContent}>
-                {/* Titraille percutante Anton */}
-                <Text style={styles.headlineTitle}>
-                  <Text style={styles.headlineBlack}>RIRE DE TOUT, </Text>
-                  <Text style={styles.headlineRed}>CHAQUE MATIN !</Text>
-                </Text>
-
-                {/* Texte concis, piquant et soigné en Inter */}
-                <Text style={styles.bodyDescription}>
-                  Retrouvez les célèbres caricaturistes de GBICH!, les strips
-                  exclusifs, l'humour d'Abidjan et le regard satirique sans filtre
-                  sur l'actu africaine.
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* ========================================================= */}
-          {/* 4. APERÇU DES ÉTAPES SUIVANTES                            */}
-          {/* ========================================================= */}
-          <View style={styles.previewSection}>
-            <View style={styles.previewHeaderRow}>
-              <Text style={styles.previewBookIcon}>📖</Text>
-              <Text style={styles.previewHeaderText}>
-                À DÉCOUVRIR ENSUITE DANS L'APPLICATION
-              </Text>
-            </View>
-
-            <View style={styles.miniCardsRow}>
-              {/* Mini-carte Étape 2 : Vidéos & Punchlines */}
-              <View style={styles.miniCard}>
-                <View style={styles.miniNumberCircle}>
-                  <Text style={styles.miniNumberText}>2</Text>
-                </View>
-                <View style={styles.miniCardTexts}>
-                  <Text style={styles.miniTitle} numberOfLines={1}>
-                    Vidéos & Punchlines
-                  </Text>
-                  <Text style={styles.miniSub} numberOfLines={1}>
-                    Gags & micro-trottoir
-                  </Text>
-                </View>
-              </View>
-
-              {/* Mini-carte Étape 3 : Jeux & Quiz 7 erreurs */}
-              <View style={styles.miniCard}>
-                <View style={styles.miniNumberCircle}>
-                  <Text style={styles.miniNumberText}>3</Text>
-                </View>
-                <View style={styles.miniCardTexts}>
-                  <Text style={styles.miniTitle} numberOfLines={1}>
-                    Jeux & Quiz 7 erreurs
-                  </Text>
-                  <Text style={styles.miniSub} numberOfLines={1}>
-                    Défis caustiques 2...
-                  </Text>
-                </View>
-              </View>
-            </View>
-          </View>
-
-          {/* ========================================================= */}
-          {/* 5. BOUTONS D'ACCESSIBILITÉ SANS FRICTION                  */}
-          {/* ========================================================= */}
-          <View style={styles.actionButtonsSection}>
-            {/* Bouton principal : SUIVANT 1/3 */}
-            <Animated.View style={{ transform: [{ scale: btnScaleAnim }] }}>
               <TouchableOpacity
-                activeOpacity={0.88}
-                onPress={handleNext}
+                activeOpacity={0.8}
+                onPress={handleSkip}
                 style={[
-                  styles.primaryNextBtn,
+                  styles.skipButton,
                   Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
                 ]}
               >
-                <Text style={styles.nextBtnText}>SUIVANT</Text>
-                <View style={styles.stepCounterBadge}>
-                  <Text style={styles.stepCounterText}>1/3</Text>
-                </View>
-                <Text style={styles.nextBtnArrow}>➔</Text>
+                <Text style={styles.skipText}>PASSER</Text>
+                <Text style={styles.skipArrow}>➔</Text>
               </TouchableOpacity>
-            </Animated.View>
+            </View>
 
-            {/* Bouton secondaire : Créer un compte ou entrer en invité */}
-            <TouchableOpacity
-              activeOpacity={0.85}
-              onPress={handleFinish}
-              style={[
-                styles.guestBtn,
-                Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-              ]}
-            >
-              <Text style={styles.guestIcon}>👤</Text>
-              <Text style={styles.guestBtnText}>
-                Créer un compte ou entrer en invité
+            {/* 2. Barre de progression segmentée (3 segments) */}
+            <View style={styles.segmentedProgressRow}>
+              <View
+                style={[
+                  styles.progressSegment,
+                  currentStep >= 1 ? styles.segmentActive : styles.segmentInactive,
+                ]}
+              />
+              <View
+                style={[
+                  styles.progressSegment,
+                  currentStep >= 2 ? styles.segmentActive : styles.segmentInactive,
+                ]}
+              />
+              <View
+                style={[
+                  styles.progressSegment,
+                  currentStep >= 3 ? styles.segmentActive : styles.segmentInactive,
+                ]}
+              />
+            </View>
+
+            {/* 3. Case BD Étape 01 avec grande illustration bien visible */}
+            <View style={styles.comicStepWrapper}>
+              {/* Tag au-dessus de la case */}
+              <View style={styles.stepTagBadge}>
+                <Text style={styles.stepTagText}>ÉTAPE 01 • CARICATURES & STRIPS</Text>
+              </View>
+
+              {/* Conteneur principal de la case BD */}
+              <View style={styles.comicPanelCard}>
+                {/* Sphère 3D rouge en accent */}
+                <ThreeDSphere
+                  size={36}
+                  colorVariant="red"
+                  floatDistance={5}
+                  floatDuration={2200}
+                  style={styles.panelSphere}
+                />
+
+                {/* Grande illustration d'atelier nette et bien visible */}
+                <View style={styles.illustrationWrapper}>
+                  <Image
+                    source={require('../../assets/image_onboarding_1.png')}
+                    style={styles.illustrationImage}
+                    resizeMode="cover"
+                  />
+
+                  {/* Cartouche animé "Y'A PAS DRAP ! ⚡" qui sautille */}
+                  <Animated.View
+                    style={[
+                      styles.drapCartouche,
+                      {
+                        transform: [{ translateY: hopAnim }],
+                      },
+                    ]}
+                  >
+                    <Text style={styles.drapText}>Y'A PAS DRAP ! ⚡</Text>
+                  </Animated.View>
+
+                  {/* Sticker Onomatopée "KPAN !" en bas à droite */}
+                  <View style={styles.kpanSticker}>
+                    <Text style={styles.kpanText}>KPAN !</Text>
+                  </View>
+                </View>
+
+                {/* Titre et description juste sous l'illustration */}
+                <View style={styles.cardTextContent}>
+                  <Text style={styles.headlineTitle}>
+                    <Text style={styles.headlineBlack}>RIRE DE TOUT, </Text>
+                    <Text style={styles.headlineRed}>CHAQUE MATIN !</Text>
+                  </Text>
+
+                  <Text style={styles.bodyDescription}>
+                    Retrouvez les célèbres caricaturistes de GBICH!, les strips
+                    exclusifs, l'humour d'Abidjan et le regard satirique sans filtre
+                    sur l'actu africaine.
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* ========================================================= */}
+          {/* SECTION INFÉRIEURE : APERÇU, BOUTONS & RÉASSURANCE         */}
+          {/* ========================================================= */}
+          <View style={styles.bottomSection}>
+            {/* 4. Aperçu des étapes suivantes */}
+            <View style={styles.previewSection}>
+              <View style={styles.previewHeaderRow}>
+                <Text style={styles.previewBookIcon}>📖</Text>
+                <Text style={styles.previewHeaderText}>
+                  À DÉCOUVRIR ENSUITE DANS L'APPLICATION
+                </Text>
+              </View>
+
+              <View style={styles.miniCardsRow}>
+                {/* Mini-carte Étape 2 */}
+                <View style={styles.miniCard}>
+                  <View style={styles.miniNumberCircle}>
+                    <Text style={styles.miniNumberText}>2</Text>
+                  </View>
+                  <View style={styles.miniCardTexts}>
+                    <Text style={styles.miniTitle} numberOfLines={1}>
+                      Vidéos & Punchlines
+                    </Text>
+                    <Text style={styles.miniSub} numberOfLines={1}>
+                      Gags & micro-trottoir
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Mini-carte Étape 3 */}
+                <View style={styles.miniCard}>
+                  <View style={styles.miniNumberCircle}>
+                    <Text style={styles.miniNumberText}>3</Text>
+                  </View>
+                  <View style={styles.miniCardTexts}>
+                    <Text style={styles.miniTitle} numberOfLines={1}>
+                      Jeux & Quiz 7 erreurs
+                    </Text>
+                    <Text style={styles.miniSub} numberOfLines={1}>
+                      Défis caustiques 2...
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </View>
+
+            {/* 5. Boutons d'Action & Note */}
+            <View style={styles.actionButtonsSection}>
+              {/* Bouton principal : SUIVANT 1/3 */}
+              <Animated.View style={{ transform: [{ scale: btnScaleAnim }] }}>
+                <TouchableOpacity
+                  activeOpacity={0.88}
+                  onPress={handleNext}
+                  style={[
+                    styles.primaryNextBtn,
+                    Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                  ]}
+                >
+                  <Text style={styles.nextBtnText}>SUIVANT</Text>
+                  <View style={styles.stepCounterBadge}>
+                    <Text style={styles.stepCounterText}>1/3</Text>
+                  </View>
+                  <Text style={styles.nextBtnArrow}>➔</Text>
+                </TouchableOpacity>
+              </Animated.View>
+
+              {/* Bouton secondaire : Créer un compte ou entrer en invité */}
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={handleFinish}
+                style={[
+                  styles.guestBtn,
+                  Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                ]}
+              >
+                <Text style={styles.guestIcon}>👤</Text>
+                <Text style={styles.guestBtnText}>
+                  Créer un compte ou entrer en invité
+                </Text>
+              </TouchableOpacity>
+
+              {/* Note d'accessibilité sans friction */}
+              <Text style={styles.reassuranceText}>
+                Accès gratuit et instantané • Aucune carte bancaire requise
               </Text>
-            </TouchableOpacity>
-
-            {/* Mention de réassurance sans barrière */}
-            <Text style={styles.reassuranceText}>
-              Accès gratuit et instantané • Aucune carte bancaire requise
-            </Text>
+            </View>
           </View>
         </Animated.View>
       </ScrollView>
@@ -331,15 +332,25 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
 const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
+    minHeight: '100%',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'web' ? 18 : 42,
-    paddingBottom: 24,
+    paddingTop: Platform.OS === 'web' ? 14 : 36,
+    paddingBottom: Platform.OS === 'web' ? 16 : 24,
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   container: {
     width: '100%',
-    maxWidth: 420,
+    maxWidth: 440,
+    flex: 1,
+    justifyContent: 'space-between',
     gap: 12,
+  },
+
+  // Section Supérieure
+  topSection: {
+    width: '100%',
+    gap: 10,
   },
 
   // 1. Barre supérieure
@@ -348,11 +359,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingVertical: 4,
+    paddingVertical: 2,
   },
   headerLogo: {
-    width: 65,
-    height: 34,
+    width: 68,
+    height: 36,
   },
   skipButton: {
     flexDirection: 'row',
@@ -362,6 +373,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     paddingHorizontal: 14,
     gap: 6,
+    borderWidth: 1.5,
+    borderColor: '#171416',
   },
   skipText: {
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
@@ -380,11 +393,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 6,
     width: '100%',
-    marginVertical: 4,
   },
   progressSegment: {
     flex: 1,
-    height: 4,
+    height: 4.5,
     borderRadius: 9999,
   },
   segmentActive: {
@@ -398,17 +410,19 @@ const styles = StyleSheet.create({
   comicStepWrapper: {
     width: '100%',
     position: 'relative',
-    marginTop: 4,
+    marginTop: 2,
   },
   stepTagBadge: {
     backgroundColor: '#1E1B1D',
     alignSelf: 'flex-start',
     paddingVertical: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 12,
     borderRadius: 6,
     marginBottom: -6,
     zIndex: 10,
     marginLeft: 12,
+    borderWidth: 1,
+    borderColor: '#3D393B',
   },
   stepTagText: {
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
@@ -431,13 +445,14 @@ const styles = StyleSheet.create({
   },
   panelSphere: {
     position: 'absolute',
-    top: -12,
-    right: -8,
+    top: -14,
+    right: -10,
     zIndex: 15,
   },
   illustrationWrapper: {
     width: '100%',
-    height: 200,
+    // Hauteur généreuse pour rendre l'image de caricaturiste bien visible et immersive
+    height: 255,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     overflow: 'hidden',
@@ -459,7 +474,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 10,
     shadowColor: '#171416',
-    shadowOffset: { width: 1.5, height: 1.5 },
+    shadowOffset: { width: 2, height: 2 },
     shadowOpacity: 1,
     shadowRadius: 0,
     zIndex: 12,
@@ -469,6 +484,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#B70014',
     letterSpacing: 0.6,
+    fontWeight: '900',
   },
   kpanSticker: {
     position: 'absolute',
@@ -495,13 +511,15 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   cardTextContent: {
-    padding: 14,
-    gap: 8,
+    paddingHorizontal: 14,
+    paddingTop: 10,
+    paddingBottom: 12,
+    gap: 6,
   },
   headlineTitle: {
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: 24,
-    lineHeight: 28,
+    fontSize: 23,
+    lineHeight: 27,
     letterSpacing: 0.5,
   },
   headlineBlack: {
@@ -512,17 +530,22 @@ const styles = StyleSheet.create({
   },
   bodyDescription: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 12.5,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 17,
     color: '#4A4648',
     fontWeight: '500',
+  },
+
+  // Section Inférieure
+  bottomSection: {
+    width: '100%',
+    gap: 10,
   },
 
   // 4. Aperçu des étapes suivantes
   previewSection: {
     width: '100%',
     gap: 6,
-    marginTop: 2,
   },
   previewHeaderRow: {
     flexDirection: 'row',
@@ -590,7 +613,6 @@ const styles = StyleSheet.create({
   actionButtonsSection: {
     width: '100%',
     gap: 8,
-    marginTop: 4,
   },
   primaryNextBtn: {
     flexDirection: 'row',
@@ -664,5 +686,6 @@ const styles = StyleSheet.create({
     color: '#888482',
     textAlign: 'center',
     fontWeight: '500',
+    paddingBottom: 2,
   },
 });
