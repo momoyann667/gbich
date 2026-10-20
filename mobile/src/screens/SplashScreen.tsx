@@ -8,10 +8,10 @@ import {
   Animated,
   Platform,
   Easing,
-  Dimensions,
 } from 'react-native';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
 import { ThreeDSphere } from '../components/common/ThreeDSphere';
+import { RotatingPen } from '../components/common/RotatingPen';
 import { GBICH_COLORS } from '../theme/tokens';
 import { injectWebFonts } from '../utils/loadFonts';
 
@@ -21,26 +21,28 @@ interface SplashScreenProps {
 }
 
 export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigation }) => {
-  // Injecte les polices officielles web
   useEffect(() => {
     injectWebFonts();
   }, []);
 
-  // Animations d'entrée
+  // Animations principales
   const entranceAnim = useRef(new Animated.Value(0)).current;
-  const logoScaleAnim = useRef(new Animated.Value(0.9)).current;
+  const logoScaleAnim = useRef(new Animated.Value(0.92)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
   const btnScaleAnim = useRef(new Animated.Value(1)).current;
   const speechBubbleSway = useRef(new Animated.Value(0)).current;
 
-  // État du pourcentage de chargement
-  const [progressPercent, setProgressPercent] = useState(0);
+  // Animation de clignotement lent du bouton d'action (Slow blink / breathing glow)
+  const slowBlinkAnim = useRef(new Animated.Value(1)).current;
 
-  // Interaction 3D Tilt (souris sur Web)
+  // Animation d'illusion d'optique sur la jauge de chargement (onde lumineuse glissante)
+  const shimmerAnim = useRef(new Animated.Value(0)).current;
+
+  const [progressPercent, setProgressPercent] = useState(0);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    // 1. Animation d'apparition séquentielle
+    // 1. Apparition séquentielle
     Animated.parallel([
       Animated.timing(entranceAnim, {
         toValue: 1,
@@ -56,7 +58,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
       }),
     ]).start();
 
-    // 2. Progression satirique 0% -> 100% ("Prêt à krou !")
+    // 2. Progression satirique 0% -> 100%
     Animated.timing(progressAnim, {
       toValue: 100,
       duration: 1600,
@@ -68,7 +70,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
       setProgressPercent(Math.round(value));
     });
 
-    // 3. Balancement subtil du cartouche satirique "Le journal qui tape fort !"
+    // 3. Balancement doux du cartouche
     const bubbleLoop = Animated.loop(
       Animated.sequence([
         Animated.timing(speechBubbleSway, {
@@ -87,13 +89,45 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
     );
     bubbleLoop.start();
 
+    // 4. Clignotement lent et élégant du bouton principal
+    const blinkLoop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(slowBlinkAnim, {
+          toValue: 0.82,
+          duration: 1200,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+        Animated.timing(slowBlinkAnim, {
+          toValue: 1,
+          duration: 1200,
+          easing: Easing.inOut(Easing.sin),
+          useNativeDriver: true,
+        }),
+      ])
+    );
+    blinkLoop.start();
+
+    // 5. Illusion d'optique sur la jauge (balayage lumineux continu)
+    const shimmerLoop = Animated.loop(
+      Animated.timing(shimmerAnim, {
+        toValue: 1,
+        duration: 1800,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    shimmerLoop.start();
+
     return () => {
       progressAnim.removeListener(listenerId);
       bubbleLoop.stop();
+      blinkLoop.stop();
+      shimmerLoop.stop();
     };
-  }, [entranceAnim, logoScaleAnim, progressAnim, speechBubbleSway]);
+  }, [entranceAnim, logoScaleAnim, progressAnim, speechBubbleSway, slowBlinkAnim, shimmerAnim]);
 
-  // Gestion du clic avec retour tactile haptique / ressort néo-brutaliste
+  // Clic avec rebond élastique tactile
   const handlePressAction = () => {
     Animated.sequence([
       Animated.timing(btnScaleAnim, {
@@ -110,25 +144,27 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
       if (onExplore) {
         onExplore();
       } else if (navigation?.navigate) {
-        // Redirige vers le feed principal ou l'onboarding
         navigation.navigate('MainTabs');
       }
     });
   };
 
-  // Balancement du cartouche (-2deg à +2deg)
   const bubbleRotate = speechBubbleSway.interpolate({
     inputRange: [0, 1],
     outputRange: ['-1.5deg', '2deg'],
   });
 
-  // Calcul du tilt 3D sur Web
+  const shimmerTranslateX = shimmerAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-100, 360],
+  });
+
   const handleMouseMove = (e: any) => {
     if (Platform.OS !== 'web') return;
     const { clientX, clientY } = e.nativeEvent || e;
     const { innerWidth, innerHeight } = window;
-    const xOffset = ((clientX - innerWidth / 2) / innerWidth) * 14;
-    const yOffset = ((clientY - innerHeight / 2) / innerHeight) * -14;
+    const xOffset = ((clientX - innerWidth / 2) / innerWidth) * 12;
+    const yOffset = ((clientY - innerHeight / 2) / innerHeight) * -12;
     setTilt({ x: yOffset, y: xOffset });
   };
 
@@ -148,16 +184,10 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
         } as any)}
       >
         {/* ========================================================= */}
-        {/* EN-TÊTE : BADGES PWA ET 100% SATIRIQUE                    */}
+        {/* EN-TÊTE : BADGE 100% SATIRIQUE ÉLÉGANT (SANS PWA V2.0)     */}
         {/* ========================================================= */}
         <Animated.View style={[styles.headerRow, { opacity: entranceAnim }]}>
-          {/* Badge Gauche : PWA V2.0 • ABIDJAN */}
-          <View style={styles.badgePwa}>
-            <ThreeDSphere size={12} colorVariant="red" floatDistance={2} floatDuration={1800} />
-            <Text style={styles.badgePwaText}>PWA V2.0 • ABIDJAN</Text>
-          </View>
-
-          {/* Badge Droit : 100% SATIRIQUE */}
+          <View style={{ flex: 1 }} />
           <View style={styles.badgeSatirique}>
             <Text style={styles.badgeSatiriqueText}>100% SATIRIQUE</Text>
           </View>
@@ -191,12 +221,12 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
               size={42}
               colorVariant="red"
               floatDelay={0}
-              floatDistance={8}
+              floatDistance={7}
               floatDuration={2600}
               style={styles.sphereTopLeft}
             />
 
-            {/* Bulle / Cartouche supérieur : LE JOURNAL QUI TAPE FORT ! */}
+            {/* Bulle / Cartouche : LE JOURNAL QUI TAPE FORT ! */}
             <Animated.View
               style={[
                 styles.speechBubbleWrapper,
@@ -205,12 +235,11 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
             >
               <View style={styles.speechBubble}>
                 <Text style={styles.speechBubbleText}>LE JOURNAL QUI TAPE FORT !</Text>
-                {/* Queue de bulle de bande dessinée pointant vers le bas */}
                 <View style={styles.speechBubbleTail} />
               </View>
             </Animated.View>
 
-            {/* Carte Blanche du Logo Officiel GBICH! */}
+            {/* Carte Blanche du Logo Officiel GBICH! (Finitions douces et nettes) */}
             <View style={styles.logoCard}>
               <Image
                 source={require('../../assets/logo.png')}
@@ -229,17 +258,17 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
               style={styles.sphereMiddleRight}
             />
 
-            {/* Sphère 3D 3 (Bas Droite, translucide/laquée) */}
+            {/* Sphère 3D 3 (Bas Droite) */}
             <ThreeDSphere
               size={34}
               colorVariant="red"
               floatDelay={800}
-              floatDistance={7}
+              floatDistance={6}
               floatDuration={2900}
               style={styles.sphereBottomRight}
             />
 
-            {/* Sous-Cartouche Néo-brutaliste : L'HUMOUR ENGAGÉ & LA BD CULTE D'ABIDJAN */}
+            {/* Sous-Bannière en Police Inter ultra-lisible (sans petits carrés de coins) */}
             <View style={styles.subBannerCard}>
               <Text style={styles.subBannerText}>
                 L'HUMOUR ENGAGÉ & LA BD CULTE D'ABIDJAN
@@ -249,22 +278,24 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
         </Animated.View>
 
         {/* ========================================================= */}
-        {/* BAS DE PAGE : JAUGE DE CHARGEMENT & ACTION BRUTALISTE      */}
+        {/* BAS DE PAGE : JAUGE DE CHARGEMENT ILLUSION & BOUTON CLIGNOTANT */}
         {/* ========================================================= */}
         <Animated.View style={[styles.bottomSection, { opacity: entranceAnim }]}>
-          {/* Carte Jauge de Chargement */}
+          {/* Bloc de Chargement (Finitions arrondies pures, sans petits carrés) */}
           <View style={styles.loadingCard}>
             <View style={styles.loadingTopRow}>
-              {/* Onde satirique rouge */}
-              <Text style={styles.waveIcon}>〽️</Text>
+              {/* Stylo plume rouge qui tourne sur lui-même */}
+              <RotatingPen size={18} />
+
               <Text style={styles.loadingStatusText} numberOfLines={1}>
                 Prêt à krou ! Touchez ci-dessous pour en...
               </Text>
               <Text style={styles.percentText}>{progressPercent}%</Text>
             </View>
 
-            {/* Barre de progression candy-striped animée */}
+            {/* Barre de progression avec illusion d'optique active même à 100% */}
             <View style={styles.progressBarTrack}>
+              {/* Remplissage striped candy */}
               <View
                 style={[
                   styles.progressBarFill,
@@ -272,9 +303,19 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
                   Platform.OS === 'web' && (styles.webStripedBar as any),
                 ]}
               />
+
+              {/* Balayage lumineux d'illusion d'optique (flux continu d'énergie) */}
+              <Animated.View
+                style={[
+                  styles.opticalShimmerBeam,
+                  {
+                    transform: [{ translateX: shimmerTranslateX }],
+                  },
+                ]}
+              />
             </View>
 
-            {/* Métadonnées de connexion locales (Abidjan) */}
+            {/* Métadonnées de connexion locales */}
             <View style={styles.loadingBottomRow}>
               <View style={styles.locationGroup}>
                 <View style={styles.locationDot} />
@@ -284,14 +325,24 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
             </View>
           </View>
 
-          {/* Bouton d'Action Néo-Brutaliste Tactile */}
-          <Animated.View style={{ transform: [{ scale: btnScaleAnim }] }}>
+          {/* Bouton d'Action avec animation de clignotement lent (Slow Pulse Glow) */}
+          <Animated.View
+            style={[
+              {
+                transform: [{ scale: btnScaleAnim }],
+                opacity: slowBlinkAnim,
+              },
+              Platform.OS === 'web' && (styles.webBtnGlow as any),
+            ]}
+          >
             <TouchableOpacity
               activeOpacity={0.88}
               onPress={handlePressAction}
-              style={[styles.actionBtn, Platform.OS === 'web' && ({ cursor: 'pointer' } as any)]}
+              style={[
+                styles.actionBtn,
+                Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+              ]}
             >
-              {/* Perle 3D blanche avec reflet laqué */}
               <ThreeDSphere
                 size={18}
                 colorVariant="pearl"
@@ -306,7 +357,7 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
             </TouchableOpacity>
           </Animated.View>
 
-          {/* Footer Légal & Historique GBICH! */}
+          {/* Footer Légal */}
           <View style={styles.footerContainer}>
             <Text style={styles.footerText}>
               • © GBICH! Média • Fondé en 1999 • Tous droits réservés •
@@ -327,55 +378,32 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 
-  // 1. En-tête / Badges
+  // 1. En-tête : Badge 100% Satirique épuré
   headerRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     zIndex: 10,
   },
-  badgePwa: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#171416',
-    borderRadius: 9999,
-    paddingVertical: 5,
-    paddingHorizontal: 12,
-    gap: 8,
-    shadowColor: '#171416',
-    shadowOffset: { width: 1.5, height: 1.5 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
-  },
-  badgePwaText: {
-    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#171416',
-    letterSpacing: 0.8,
-  },
   badgeSatirique: {
     backgroundColor: '#B70014',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: '#171416',
-    borderRadius: 4,
+    borderRadius: 6,
     paddingVertical: 5,
     paddingHorizontal: 12,
     shadowColor: '#171416',
-    shadowOffset: { width: 1.5, height: 1.5 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
     elevation: 2,
   },
   badgeSatiriqueText: {
-    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: 13,
-    fontWeight: '800',
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 12.5,
+    fontWeight: '600', // Moins gras, net et lisible
     color: '#FFFFFF',
-    letterSpacing: 1,
+    letterSpacing: 0.8,
   },
 
   // 2. Coeur 3D et Logo
@@ -399,15 +427,16 @@ const styles = StyleSheet.create({
   },
   speechBubble: {
     backgroundColor: '#FFFFFF',
-    borderWidth: 2.5,
+    borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 14,
     paddingVertical: 6,
     paddingHorizontal: 16,
     shadowColor: '#171416',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.14,
+    shadowRadius: 5,
+    elevation: 3,
     position: 'relative',
   },
   speechBubbleText: {
@@ -420,14 +449,14 @@ const styles = StyleSheet.create({
   },
   speechBubbleTail: {
     position: 'absolute',
-    bottom: -8,
+    bottom: -7,
     left: '50%',
     marginLeft: -6,
     width: 0,
     height: 0,
     borderLeftWidth: 6,
     borderRightWidth: 6,
-    borderTopWidth: 8,
+    borderTopWidth: 7,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
     borderTopColor: '#171416',
@@ -436,17 +465,17 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
     backgroundColor: '#FFFFFF',
-    borderWidth: 2.5,
+    borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 16,
     shadowColor: '#171416',
-    shadowOffset: { width: 4, height: 5 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
     zIndex: 6,
   },
   logoImage: {
@@ -473,33 +502,34 @@ const styles = StyleSheet.create({
   },
   subBannerCard: {
     width: '100%',
-    backgroundColor: '#EBE8E4',
-    borderWidth: 2.5,
+    backgroundColor: '#FAF7F2',
+    borderWidth: 1.8,
     borderColor: '#171416',
-    borderRadius: 10,
+    borderRadius: 12,
     paddingVertical: 10,
     paddingHorizontal: 14,
     marginTop: 14,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#171416',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 2,
     zIndex: 6,
   },
   subBannerText: {
-    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: 13,
-    fontWeight: '800',
+    // Police Inter nette et ultra-lisible demandée par l'utilisateur
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 12,
+    fontWeight: '700',
     color: '#171416',
-    letterSpacing: 0.8,
+    letterSpacing: 0.6,
     textAlign: 'center',
     textTransform: 'uppercase',
   },
 
-  // 3. Bas de page : Chargement, Bouton & Footer
+  // 3. Bas de page : Chargement & Bouton
   bottomSection: {
     width: '100%',
     maxWidth: 380,
@@ -509,15 +539,16 @@ const styles = StyleSheet.create({
   },
   loadingCard: {
     backgroundColor: '#FFFFFF',
-    borderWidth: 2.5,
+    borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 16,
     padding: 14,
+    // Ombre douce et continue sans petits carrés saillants aux coins
     shadowColor: '#171416',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
     gap: 10,
   },
   loadingTopRow: {
@@ -525,15 +556,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  waveIcon: {
-    fontSize: 16,
-    marginRight: 6,
-  },
   loadingStatusText: {
     flex: 1,
-    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '600',
     color: '#171416',
   },
   percentText: {
@@ -545,17 +572,25 @@ const styles = StyleSheet.create({
   },
   progressBarTrack: {
     height: 14,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
+    backgroundColor: '#FAF7F2',
+    borderWidth: 1.8,
     borderColor: '#171416',
     borderRadius: 9999,
     overflow: 'hidden',
-    padding: 1,
+    position: 'relative',
     justifyContent: 'center',
   },
   progressBarFill: {
     height: '100%',
     backgroundColor: '#F5222D',
+    borderRadius: 9999,
+  },
+  opticalShimmerBeam: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    width: 60,
+    backgroundColor: 'rgba(255, 255, 255, 0.45)',
     borderRadius: 9999,
   },
   webStripedBar: {
@@ -583,31 +618,31 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#936E6B',
+    backgroundColor: '#B70014',
   },
   metaSubText: {
-    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
-    fontSize: 9.5,
-    fontWeight: '600',
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 10,
+    fontWeight: '500',
     color: '#625D5F',
   },
 
-  // Bouton Néo-brutaliste
+  // Bouton d'Action avec finitions douces arrondies (sans petits carrés de terminaison)
   actionBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#B70014',
-    borderWidth: 2.5,
+    borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 16,
     paddingVertical: 14,
     paddingHorizontal: 20,
-    shadowColor: '#171416',
-    shadowOffset: { width: 3, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 6,
+    shadowColor: '#B70014',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
+    elevation: 4,
     gap: 12,
   },
   btnPearl: {
@@ -626,17 +661,21 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
+  webBtnGlow: {
+    filter: 'drop-shadow(0 4px 12px rgba(183, 0, 20, 0.35))',
+  },
+
   // Footer
   footerContainer: {
     alignItems: 'center',
     paddingTop: 4,
   },
   footerText: {
-    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
-    fontSize: 9.5,
-    fontWeight: '600',
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 10,
+    fontWeight: '500',
     color: '#888482',
-    letterSpacing: 0.5,
+    letterSpacing: 0.3,
     textAlign: 'center',
   },
 });

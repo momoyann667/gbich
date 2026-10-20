@@ -29,7 +29,30 @@ export function injectWebFonts() {
     style.innerHTML = `
       @keyframes candyStripe {
         0% { background-position: 0 0; }
+        100% { background-position: 36px 0; }
+      }
+      @keyframes opticalStripes {
+        0% { background-position: 0 0; }
         100% { background-position: 40px 0; }
+      }
+      @keyframes gleamPass {
+        0% { transform: translateX(-120%); opacity: 0; }
+        30% { opacity: 0.7; }
+        70% { opacity: 0.7; }
+        100% { transform: translateX(280%); opacity: 0; }
+      }
+      @keyframes slowBlink {
+        0%, 100% {
+          opacity: 1;
+          filter: drop-shadow(0 4px 10px rgba(183, 0, 20, 0.45));
+        }
+        50% {
+          opacity: 0.82;
+          filter: drop-shadow(0 6px 18px rgba(245, 34, 45, 0.7));
+        }
+      }
+      .gbich-slow-blink {
+        animation: slowBlink 2.4s ease-in-out infinite;
       }
       .gbich-striped-bar {
         background-image: repeating-linear-gradient(
@@ -40,7 +63,7 @@ export function injectWebFonts() {
           #B70014 20px
         );
         background-size: 28px 28px;
-        animation: candyStripe 1s linear infinite;
+        animation: opticalStripes 0.9s linear infinite;
       }
       .gbich-sphere-3d {
         background: radial-gradient(circle at 35% 30%, #ff858d 0%, #F5222D 45%, #8B0010 85%, #4A0008 100%);
@@ -51,8 +74,7 @@ export function injectWebFonts() {
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25), inset -1px -1px 3px rgba(0,0,0,0.2), inset 1px 1px 2px rgba(255,255,255,0.9);
       }
       .gbich-btn-press:active {
-        transform: translate(2px, 2px) !important;
-        box-shadow: 1px 1px 0px #171416 !important;
+        transform: translate(1px, 2px) !important;
       }
     `;
     document.head.appendChild(style);
