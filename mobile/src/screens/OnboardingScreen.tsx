@@ -294,10 +294,10 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                   style={styles.panelSphereTopRight}
                 />
 
-                <View style={styles.illustrationWrapper}>
+                <View style={styles.comicInnerFrame}>
                   <Image
                     source={require('../../assets/image_onboarding_1.png')}
-                    style={styles.illustrationImage}
+                    style={styles.illustrationImageCover}
                     resizeMode="cover"
                   />
 
@@ -336,7 +336,12 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                 <Text style={styles.stepTagText}>ÉTAPE 02 • VIDÉOS & PUNCHLINES</Text>
               </View>
 
-              <View style={styles.comicPanelCard}>
+              <View
+                style={[
+                  styles.comicPanelCard,
+                  Platform.OS === 'web' && (webIllustrationStyles.cardHalftone as any),
+                ]}
+              >
                 {/* Sphère 3D rouge en accent (Haut Droite) */}
                 <ThreeDSphere
                   size={38}
@@ -355,16 +360,38 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                   style={styles.panelSphereBottomLeft}
                 />
 
-                {/* Conteneur de l'image de Cauphy Gombo */}
-                <View style={styles.illustrationWrapper}>
-                  <Animated.Image
-                    source={require('../../assets/image_onboarding_2.png')}
-                    style={[
-                      styles.illustrationImage,
-                      { transform: [{ rotate: characterRotate }] },
-                    ]}
-                    resizeMode="cover"
-                  />
+                {/* Cadre BD avec rayonnement solaire satirique (Comic Sunburst) */}
+                <View
+                  style={[
+                    styles.comicInnerFrame,
+                    styles.sunburstFrame,
+                    Platform.OS === 'web' && (webIllustrationStyles.sunburstBg as any),
+                  ]}
+                >
+                  {/* Rayons solaires satiriques en couches (rendu natif de secours) */}
+                  <View style={styles.sunburstNativeContainer} pointerEvents="none">
+                    {[0, 22.5, 45, 67.5, 90, 112.5, 135, 157.5].map((deg) => (
+                      <View
+                        key={`sunray-${deg}`}
+                        style={[
+                          styles.sunburstRay,
+                          { transform: [{ rotate: `${deg}deg` }] },
+                        ]}
+                      />
+                    ))}
+                  </View>
+
+                  {/* Illustration Cauphy Gombo centrée et diminuée pour visibilité intégrale */}
+                  <View style={styles.cauphyWrapper}>
+                    <Animated.Image
+                      source={require('../../assets/image_onboarding_2.png')}
+                      style={[
+                        styles.cauphyCharacterImage,
+                        { transform: [{ rotate: characterRotate }] },
+                      ]}
+                      resizeMode="contain"
+                    />
+                  </View>
 
                   {/* Volutes de fumée animées du cigare */}
                   <View style={styles.cigarSmokeContainer} pointerEvents="none">
@@ -411,7 +438,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                   </View>
                 </View>
 
-                {/* Titraille percutante (non grasse) & Description Inter */}
+                {/* Titraille percutante BOLD mais nette et lisible & Description */}
                 <View style={styles.cardTextContent}>
                   <Text style={styles.headlineTitle}>
                     <Text style={styles.headlineBlack}>VIDÉOS CHOC, </Text>
@@ -661,6 +688,7 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderColor: '#171416',
     borderRadius: 18,
+    padding: 10,
     overflow: 'visible',
     shadowColor: '#171416',
     shadowOffset: { width: 3, height: 4 },
@@ -671,35 +699,74 @@ const styles = StyleSheet.create({
   },
   panelSphereTopRight: {
     position: 'absolute',
-    top: -14,
+    top: -12,
     right: -10,
     zIndex: 15,
   },
   panelSphereBottomLeft: {
     position: 'absolute',
-    bottom: -8,
+    bottom: -10,
     left: -8,
     zIndex: 15,
   },
-  illustrationWrapper: {
+
+  // Cadre intérieur de la case BD
+  comicInnerFrame: {
     width: '100%',
-    height: Platform.OS === 'web' ? 340 : 300,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    height: Platform.OS === 'web' ? 310 : 280,
+    borderWidth: 2,
+    borderColor: '#171416',
+    borderRadius: 12,
     overflow: 'hidden',
     position: 'relative',
     backgroundColor: '#FAF7F2',
   },
-  illustrationImage: {
+  illustrationImageCover: {
     width: '100%',
     height: '100%',
   },
 
-  // Fumée du cigare
+  // Fond bande dessinée rayonnement solaire (Comic Sunburst)
+  sunburstFrame: {
+    backgroundColor: '#FFF5EC',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sunburstNativeContainer: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 2,
+    height: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    pointerEvents: 'none',
+  },
+  sunburstRay: {
+    position: 'absolute',
+    width: 700,
+    height: 42,
+    backgroundColor: '#F8CEBB',
+  },
+
+  // Conteneur de Cauphy Gombo diminué pour une visibilité totale
+  cauphyWrapper: {
+    width: '78%',
+    height: '90%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 5,
+  },
+  cauphyCharacterImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  // Fumée animée du cigare
   cigarSmokeContainer: {
     position: 'absolute',
-    top: '32%',
-    right: '37%',
+    top: '27%',
+    left: '57%',
     width: 20,
     height: 30,
     alignItems: 'center',
@@ -833,24 +900,27 @@ const styles = StyleSheet.create({
 
   // Contenu textuel sous l'image
   cardTextContent: {
-    paddingHorizontal: 16,
-    paddingTop: 12,
-    paddingBottom: 16,
+    paddingHorizontal: 8,
+    paddingTop: 10,
+    paddingBottom: 8,
     gap: 8,
   },
   headlineTitle: {
-    // Non trop gras comme demandé, net et ultra-lisible
+    // BOLD mais pas trop, net et parfaitement lisible
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
     fontSize: 22,
     lineHeight: 28,
-    letterSpacing: 0.4,
-    fontWeight: '700',
+    letterSpacing: 0.3,
+    fontWeight: '800',
+    textTransform: 'uppercase',
   },
   headlineBlack: {
     color: '#171416',
+    fontWeight: '800',
   },
   headlineRed: {
-    color: '#B70014',
+    color: '#F5222D',
+    fontWeight: '800',
   },
   bodyDescription: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
@@ -1008,3 +1078,16 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
 });
+
+const webIllustrationStyles = {
+  sunburstBg: {
+    backgroundImage: `repeating-conic-gradient(from 0deg at 50% 50%, #FFF5EC 0deg 11.25deg, #F8CEBB 11.25deg 22.5deg)`,
+    backgroundColor: '#FFF5EC',
+  },
+  cardHalftone: {
+    backgroundImage: `radial-gradient(#171416 0.65px, transparent 0.65px)`,
+    backgroundSize: '16px 16px',
+    backgroundColor: '#FFFFFF',
+  },
+};
+
