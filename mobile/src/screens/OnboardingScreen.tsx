@@ -348,7 +348,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                 </View>
               </View>
             </View>
-          ) : (
+          ) : currentStep === 2 ? (
             /* ------------------ ÉTAPE 02 ------------------ */
             <View style={styles.comicStepWrapper}>
               <View style={styles.stepTagBadge}>
@@ -472,6 +472,86 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                 </View>
               </View>
             </View>
+          ) : (
+            /* ------------------ ÉTAPE 03 ------------------ */
+            <View style={styles.comicStepWrapper}>
+              <View style={styles.stepHeaderRow}>
+                <View style={styles.stepTagBadge}>
+                  <Text style={styles.stepTagText}>🔴 ÉTAPE 03 • JEUX & DÉFIS SATIRIQUES</Text>
+                </View>
+                <Text style={styles.stepFractionText}>03 / 03</Text>
+              </View>
+
+              <View
+                style={[
+                  styles.comicPanelCard,
+                  Platform.OS === 'web' && (webIllustrationStyles.cardHalftone as any),
+                ]}
+              >
+                {/* Sphère 3D rouge en accent (Haut Gauche) */}
+                <ThreeDSphere
+                  size={36}
+                  colorVariant="red"
+                  floatDistance={5}
+                  floatDuration={2200}
+                  style={styles.panelSphereTopLeft}
+                />
+
+                {/* Sphère 3D rouge en accent (Haut Droite) */}
+                <ThreeDSphere
+                  size={36}
+                  colorVariant="red"
+                  floatDistance={4}
+                  floatDuration={2500}
+                  style={styles.panelSphereTopRight}
+                />
+
+                {/* Cadre BD de l'image de jeux & quiz */}
+                <View style={styles.comicInnerFrame}>
+                  <Image
+                    source={require('../../assets/image_onboarding_3.png')}
+                    style={styles.illustrationImageCover}
+                    resizeMode="cover"
+                  />
+
+                  {/* Sticker TCHÊÊ ! 🔥 en haut à gauche */}
+                  <View style={styles.tcheeSticker}>
+                    <Text style={styles.tcheeText}>TCHÊÊ ! 🔥</Text>
+                  </View>
+
+                  {/* Badge Pilule GAGNE DES GBICHS ! en bas à droite */}
+                  <View style={styles.gagneBadge}>
+                    <Text style={styles.gagneIcon}>🎯</Text>
+                    <Text style={styles.gagneText}>GAGNE DES GBICHS !</Text>
+                  </View>
+                </View>
+
+                {/* Bulle / Cartouche interactive : TROUVE LES 7 ERREURS SI TU ES CHICOT ! */}
+                <View style={styles.sevenErrorsBubble}>
+                  <View style={styles.sevenErrorsTail} />
+                  <View style={styles.sevenErrorsContent}>
+                    <Text style={styles.targetIcon}>🎯</Text>
+                    <Text style={styles.sevenErrorsText}>
+                      « TROUVE LES 7 ERREURS SI TU ES CHICOT ! » 🎯
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Titraille percutante en ANTON & Description */}
+                <View style={styles.cardTextContent}>
+                  <Text style={styles.headlineTitle}>
+                    <Text style={styles.headlineBlack}>DÉFIE LES ERREURS, GAGNE DES </Text>
+                    <Text style={styles.headlineRedUnderline}>GBICHS !</Text>
+                  </Text>
+
+                  <Text style={styles.bodyDescription}>
+                    Affronte chaque jour le Quiz satirique de l'actu et le mythique jeu des
+                    7 erreurs d'Abidjan. Cumule des points, débloque des badges et monte au
+                    classement des plus grands vanneurs !
+                  </Text>
+                </View>
+              </View>
+            </View>
           )}
 
           {/* ========================================================= */}
@@ -516,7 +596,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                 </View>
               </TouchableOpacity>
             </View>
-          ) : (
+          ) : currentStep === 2 ? (
             /* Cartouches Étape 2 (Étape 1 validée, Étape 3 suivante) */
             <View style={styles.miniCardsRow}>
               {/* Étape 1 Validée */}
@@ -557,13 +637,54 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                 </View>
               </TouchableOpacity>
             </View>
+          ) : (
+            /* Cartouches Étape 3 (Étape 1 & 2 validées) */
+            <View style={styles.miniCardsRow}>
+              {/* Étape 1 Validée */}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setCurrentStep(1)}
+                style={styles.miniCard}
+              >
+                <View style={styles.completedCheckCircleRed}>
+                  <Text style={styles.completedCheckTextRed}>✓</Text>
+                </View>
+                <View style={styles.miniCardTexts}>
+                  <Text style={styles.miniTitle} numberOfLines={1}>
+                    01. STRIPS & BD
+                  </Text>
+                  <Text style={styles.completedValidTextRed} numberOfLines={1}>
+                    ✓ Validé
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              {/* Étape 2 Validée */}
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => setCurrentStep(2)}
+                style={styles.miniCard}
+              >
+                <View style={styles.completedCheckCircleRed}>
+                  <Text style={styles.completedCheckTextRed}>✓</Text>
+                </View>
+                <View style={styles.miniCardTexts}>
+                  <Text style={styles.miniTitle} numberOfLines={1}>
+                    02. VIDÉOS CHOC
+                  </Text>
+                  <Text style={styles.completedValidTextRed} numberOfLines={1}>
+                    ✓ Validé
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           )}
 
           {/* ========================================================= */}
           {/* 5. BOUTONS D'ACTION                                       */}
           {/* ========================================================= */}
           <View style={styles.actionButtonsSection}>
-            {/* Bouton principal : SUIVANT (1/3 ou 2/3) avec effet tactile physique */}
+            {/* Bouton principal : SUIVANT ou DÉMARRER L'AVENTURE avec effet tactile */}
             <Animated.View
               style={{
                 transform: [
@@ -584,13 +705,30 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
                     ([webIllustrationStyles.tactileNextBtn, { cursor: 'pointer' }] as any),
                 ]}
               >
-                <Text style={styles.nextBtnText}>SUIVANT</Text>
-                <View style={styles.stepCounterBadge}>
-                  <Text style={styles.stepCounterText}>
-                    {currentStep}/3
-                  </Text>
-                </View>
-                <Text style={styles.nextBtnArrow}>➔</Text>
+                {currentStep === 3 ? (
+                  <>
+                    <ThreeDSphere
+                      size={24}
+                      colorVariant="red"
+                      floatDistance={3}
+                      floatDuration={2000}
+                      style={styles.btnSphereAccent}
+                    />
+                    <Text style={styles.finishBtnText}>
+                      DÉMARRER L'AVENTURE GBICH! 🚀
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.nextBtnText}>SUIVANT</Text>
+                    <View style={styles.stepCounterBadge}>
+                      <Text style={styles.stepCounterText}>
+                        {currentStep}/3
+                      </Text>
+                    </View>
+                    <Text style={styles.nextBtnArrow}>➔</Text>
+                  </>
+                )}
               </TouchableOpacity>
             </Animated.View>
 
@@ -605,12 +743,16 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
             >
               <Text style={styles.guestIcon}>👤</Text>
               <Text style={styles.guestBtnText}>
-                Créer un compte ou entrer en invité
+                {currentStep === 3
+                  ? 'Se connecter / Créer un compte'
+                  : 'Créer un compte ou entrer en invité'}
               </Text>
             </TouchableOpacity>
 
             <Text style={styles.reassuranceText}>
-              Accès gratuit et instantané • Aucune carte bancaire requise
+              {currentStep === 3
+                ? '✓ 100% Gratuit • Humour ivoirien certifié sans filtre'
+                : 'Accès gratuit et instantané • Aucune carte bancaire requise'}
             </Text>
           </View>
         </Animated.View>
@@ -623,8 +765,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'web' ? 14 : 36,
-    paddingBottom: Platform.OS === 'web' ? 20 : 32,
+    paddingTop: Platform.OS === 'web' ? 10 : 26,
+    paddingBottom: Platform.OS === 'web' ? 32 : 40,
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -633,7 +775,7 @@ const styles = StyleSheet.create({
     maxWidth: 440,
     flex: 1,
     justifyContent: 'space-between',
-    gap: 14,
+    gap: 10,
   },
 
   // 1. Barre supérieure
@@ -698,6 +840,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     marginTop: 2,
   },
+  stepHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: -6,
+    zIndex: 10,
+    paddingHorizontal: 2,
+  },
   stepTagBadge: {
     backgroundColor: '#1E1B1D',
     alignSelf: 'flex-start',
@@ -716,6 +867,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     letterSpacing: 0.8,
   },
+  stepFractionText: {
+    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
+    fontSize: 13,
+    color: '#171416',
+    letterSpacing: 0.8,
+    marginRight: 6,
+  },
   comicPanelCard: {
     backgroundColor: '#FFFFFF',
     borderWidth: 2.5,
@@ -730,6 +888,12 @@ const styles = StyleSheet.create({
     elevation: 4,
     position: 'relative',
   },
+  panelSphereTopLeft: {
+    position: 'absolute',
+    top: -12,
+    left: -10,
+    zIndex: 15,
+  },
   panelSphereTopRight: {
     position: 'absolute',
     top: -12,
@@ -743,10 +907,10 @@ const styles = StyleSheet.create({
     zIndex: 15,
   },
 
-  // Cadre intérieur de la case BD
+  // Cadre intérieur de la case BD (hauteur compacte pour visibilité optimale du bas)
   comicInnerFrame: {
     width: '100%',
-    height: Platform.OS === 'web' ? 310 : 280,
+    height: Platform.OS === 'web' ? 260 : 235,
     borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 12,
@@ -819,8 +983,8 @@ const styles = StyleSheet.create({
   // Cartouche Étape 1 : Y'a pas drap !
   drapCartouche: {
     position: 'absolute',
-    top: 12,
-    left: 12,
+    top: 10,
+    left: 10,
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
     borderColor: '#171416',
@@ -844,7 +1008,7 @@ const styles = StyleSheet.create({
   // Bulle Étape 2 : Y'a dérapage ici ! 😂
   derapageBubble: {
     position: 'absolute',
-    top: 12,
+    top: 10,
     left: 10,
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
@@ -882,8 +1046,8 @@ const styles = StyleSheet.create({
   // Sticker Jaune TCHÂÂÂ !
   tchaaaSticker: {
     position: 'absolute',
-    top: 14,
-    right: 12,
+    top: 10,
+    right: 10,
     backgroundColor: '#FACC15', // Jaune vif
     borderWidth: 2,
     borderColor: '#171416',
@@ -908,8 +1072,8 @@ const styles = StyleSheet.create({
   // Sticker Rouge KPAN !
   kpanSticker: {
     position: 'absolute',
-    bottom: 12,
-    right: 12,
+    bottom: 10,
+    right: 10,
     backgroundColor: '#B70014',
     borderWidth: 2,
     borderColor: '#171416',
@@ -931,18 +1095,117 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 
+  // Éléments Étape 3 : TCHÊÊ ! 🔥 & Pilule GAGNE DES GBICHS !
+  tcheeSticker: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+    backgroundColor: '#F5222D',
+    borderWidth: 2,
+    borderColor: '#171416',
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    transform: [{ rotate: '-4deg' }],
+    shadowColor: '#171416',
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    zIndex: 12,
+  },
+  tcheeText: {
+    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
+    fontSize: 13,
+    color: '#FFFFFF',
+    letterSpacing: 0.8,
+  },
+  gagneBadge: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.8,
+    borderColor: '#171416',
+    borderRadius: 9999,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    gap: 5,
+    shadowColor: '#171416',
+    shadowOffset: { width: 1.5, height: 1.5 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    zIndex: 12,
+  },
+  gagneIcon: {
+    fontSize: 11,
+  },
+  gagneText: {
+    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
+    fontSize: 11,
+    color: '#171416',
+    letterSpacing: 0.5,
+  },
+
+  // Bulle / Cartouche Étape 3 : 7 ERREURS
+  sevenErrorsBubble: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 2,
+    borderColor: '#171416',
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    marginTop: 8,
+    marginBottom: 2,
+    position: 'relative',
+    shadowColor: '#171416',
+    shadowOffset: { width: 1.5, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  sevenErrorsTail: {
+    position: 'absolute',
+    top: -6,
+    left: 28,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 6,
+    borderRightWidth: 6,
+    borderBottomWidth: 6,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#171416',
+  },
+  sevenErrorsContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  targetIcon: {
+    fontSize: 13,
+  },
+  sevenErrorsText: {
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 11.5,
+    fontWeight: '700',
+    color: '#171416',
+    letterSpacing: 0.2,
+  },
+
   // Contenu textuel sous l'image
   cardTextContent: {
-    paddingHorizontal: 8,
-    paddingTop: 10,
-    paddingBottom: 8,
-    gap: 8,
+    paddingHorizontal: 6,
+    paddingTop: 8,
+    paddingBottom: 6,
+    gap: 6,
   },
   headlineTitle: {
     // Titres percutants en ANTON
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: Platform.OS === 'web' ? 28 : 25,
-    lineHeight: Platform.OS === 'web' ? 34 : 31,
+    fontSize: Platform.OS === 'web' ? 26 : 23,
+    lineHeight: Platform.OS === 'web' ? 32 : 29,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
@@ -952,11 +1215,15 @@ const styles = StyleSheet.create({
   headlineRed: {
     color: '#F5222D',
   },
+  headlineRedUnderline: {
+    color: '#F5222D',
+    textDecorationLine: 'underline',
+  },
   bodyDescription: {
     // Textes explicatifs en plus grand
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: Platform.OS === 'web' ? 14.5 : 13.5,
-    lineHeight: Platform.OS === 'web' ? 22 : 20,
+    fontSize: Platform.OS === 'web' ? 14 : 13,
+    lineHeight: Platform.OS === 'web' ? 21 : 19,
     color: '#3A3638',
     fontWeight: '500',
   },
@@ -966,7 +1233,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     width: '100%',
-    marginTop: 4,
+    marginTop: 2,
   },
   miniCard: {
     flex: 1,
@@ -976,9 +1243,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.8,
     borderColor: '#D4D0CC',
     borderRadius: 14,
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 12,
-    minHeight: 62,
+    minHeight: 56,
     gap: 10,
     shadowColor: '#171416',
     shadowOffset: { width: 1.5, height: 2 },
@@ -987,62 +1254,83 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   miniNumberCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: '#DCD9D7',
     alignItems: 'center',
     justifyContent: 'center',
   },
   miniNumberText: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 13,
+    fontSize: 12.5,
     fontWeight: '800',
     color: '#171416',
   },
   completedCheckCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: '#171416',
     alignItems: 'center',
     justifyContent: 'center',
   },
   completedCheckText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 13,
+    fontWeight: '900',
+  },
+  completedCheckCircleRed: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#F5222D',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: '#171416',
+  },
+  completedCheckTextRed: {
+    color: '#FFFFFF',
+    fontSize: 13,
     fontWeight: '900',
   },
   miniCardTexts: {
     flex: 1,
-    gap: 2,
+    gap: 1,
   },
   miniTitle: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 12.5,
+    fontSize: 12,
     fontWeight: '700',
     color: '#171416',
   },
   miniSub: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 11,
+    fontSize: 10.5,
     color: '#625D5F',
     fontWeight: '500',
   },
   completedValidText: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 11,
+    fontSize: 10.5,
     color: '#10B981', // Vert émeraude validé
+    fontWeight: '700',
+  },
+  completedValidTextRed: {
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 10.5,
+    color: '#F5222D',
     fontWeight: '700',
   },
 
   // 5. Boutons d'Action positionnés tout en bas
   actionButtonsSection: {
     width: '100%',
-    gap: 10,
-    marginTop: 'auto',
-    paddingTop: 16,
-    paddingBottom: 4,
+    gap: 8,
+    marginTop: 6,
+    paddingTop: 8,
+    paddingBottom: 2,
   },
   primaryNextBtn: {
     flexDirection: 'row',
@@ -1052,7 +1340,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#171416',
     borderRadius: 14,
-    paddingVertical: 15,
+    paddingVertical: 14,
     paddingHorizontal: 20,
     shadowColor: '#171416',
     shadowOffset: { width: 5, height: 5 },
@@ -1060,6 +1348,19 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 6,
     gap: 10,
+    position: 'relative',
+  },
+  btnSphereAccent: {
+    position: 'absolute',
+    top: -10,
+    right: -8,
+    zIndex: 15,
+  },
+  finishBtnText: {
+    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
+    fontSize: 15.5,
+    color: '#FFFFFF',
+    letterSpacing: 0.8,
   },
   nextBtnText: {
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
@@ -1092,7 +1393,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 12,
-    paddingVertical: 13.5,
+    paddingVertical: 12,
     paddingHorizontal: 16,
     shadowColor: '#171416',
     shadowOffset: { width: 2, height: 2 },
@@ -1112,11 +1413,12 @@ const styles = StyleSheet.create({
   },
   reassuranceText: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 10.5,
-    color: '#888482',
+    fontSize: 11,
+    color: '#625D5F',
     textAlign: 'center',
-    fontWeight: '500',
-    paddingTop: 2,
+    fontWeight: '600',
+    paddingTop: 3,
+    paddingBottom: 2,
   },
 });
 
