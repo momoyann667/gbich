@@ -43,6 +43,25 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   const smokeAnim1 = useRef(new Animated.Value(0)).current;
   const smokeAnim2 = useRef(new Animated.Value(0)).current;
 
+  // Animation tactile du bouton SUIVANT (translation 3px, 3px)
+  const btnTranslate = useRef(new Animated.Value(0)).current;
+
+  const handlePressIn = () => {
+    Animated.spring(btnTranslate, {
+      toValue: 3,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(btnTranslate, {
+      toValue: 0,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  };
+
   // Re-déclenche l'animation d'apparition à chaque changement d'étape
   useEffect(() => {
     fadeAnim.setValue(0);
@@ -544,14 +563,25 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
           {/* 5. BOUTONS D'ACTION                                       */}
           {/* ========================================================= */}
           <View style={styles.actionButtonsSection}>
-            {/* Bouton principal : SUIVANT (1/3 ou 2/3) */}
-            <Animated.View style={{ transform: [{ scale: btnScaleAnim }] }}>
+            {/* Bouton principal : SUIVANT (1/3 ou 2/3) avec effet tactile physique */}
+            <Animated.View
+              style={{
+                transform: [
+                  { scale: btnScaleAnim },
+                  { translateX: btnTranslate },
+                  { translateY: btnTranslate },
+                ],
+              }}
+            >
               <TouchableOpacity
-                activeOpacity={0.88}
+                activeOpacity={0.92}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
                 onPress={handleNext}
                 style={[
                   styles.primaryNextBtn,
-                  Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                  Platform.OS === 'web' &&
+                    ([webIllustrationStyles.tactileNextBtn, { cursor: 'pointer' }] as any),
                 ]}
               >
                 <Text style={styles.nextBtnText}>SUIVANT</Text>
@@ -909,27 +939,25 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   headlineTitle: {
-    // BOLD mais pas trop, net et parfaitement lisible
-    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 22,
-    lineHeight: 28,
-    letterSpacing: 0.3,
-    fontWeight: '800',
+    // Titres percutants en ANTON
+    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
+    fontSize: Platform.OS === 'web' ? 28 : 25,
+    lineHeight: Platform.OS === 'web' ? 34 : 31,
+    letterSpacing: 0.8,
     textTransform: 'uppercase',
   },
   headlineBlack: {
     color: '#171416',
-    fontWeight: '800',
   },
   headlineRed: {
     color: '#F5222D',
-    fontWeight: '800',
   },
   bodyDescription: {
+    // Textes explicatifs en plus grand
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 12.5,
-    lineHeight: 18,
-    color: '#4A4648',
+    fontSize: Platform.OS === 'web' ? 14.5 : 13.5,
+    lineHeight: Platform.OS === 'web' ? 22 : 20,
+    color: '#3A3638',
     fontWeight: '500',
   },
 
@@ -1020,17 +1048,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#B70014',
-    borderWidth: 2.5,
+    backgroundColor: '#F5222D',
+    borderWidth: 3,
     borderColor: '#171416',
     borderRadius: 14,
     paddingVertical: 15,
     paddingHorizontal: 20,
     shadowColor: '#171416',
-    shadowOffset: { width: 3, height: 4 },
+    shadowOffset: { width: 5, height: 5 },
     shadowOpacity: 1,
     shadowRadius: 0,
-    elevation: 4,
+    elevation: 6,
     gap: 10,
   },
   nextBtnText: {
@@ -1101,6 +1129,9 @@ const webIllustrationStyles = {
     backgroundImage: `radial-gradient(#171416 0.65px, transparent 0.65px)`,
     backgroundSize: '16px 16px',
     backgroundColor: '#FFFFFF',
+  },
+  tactileNextBtn: {
+    boxShadow: '5px 5px 0px #171416',
   },
 };
 
