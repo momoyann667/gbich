@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "GBICH'APP",
+    "slug": "gbich-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121212"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ci.gbich.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#121212",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "package": "ci.gbich.app",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro",
+      "themeColor": "#FFCC00",
+      "backgroundColor": "#121212",
+      "name": "GBICH'APP — L'humour et l'info sans filtre",
+      "shortName": "GBICH'APP",
+      "lang": "fr",
+      "display": "standalone",
+      "orientation": "portrait",
+      "meta": {
+        "viewport": "width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover",
+        "theme-color": "#FFCC00",
+        "apple-mobile-web-app-capable": "yes",
+        "apple-mobile-web-app-status-bar-style": "black-translucent"
+      }
+    }
+  }
+}
