@@ -605,10 +605,12 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // 5. Boutons d'Action
+  // 5. Boutons d'Action (descendus plus bas pour combler l'espace résiduel)
   actionButtonsSection: {
     width: '100%',
-    gap: 8,
+    gap: 10,
+    marginTop: 14,
+    paddingBottom: 4,
   },
   primaryNextBtn: {
     flexDirection: 'row',
@@ -618,7 +620,7 @@ const styles = StyleSheet.create({
     borderWidth: 2.5,
     borderColor: '#171416',
     borderRadius: 14,
-    paddingVertical: 13,
+    paddingVertical: 14,
     paddingHorizontal: 20,
     shadowColor: '#171416',
     shadowOffset: { width: 3, height: 4 },
@@ -658,7 +660,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#171416',
     borderRadius: 12,
-    paddingVertical: 11,
+    paddingVertical: 12.5,
     paddingHorizontal: 16,
     shadowColor: '#171416',
     shadowOffset: { width: 2, height: 2 },
@@ -672,16 +674,16 @@ const styles = StyleSheet.create({
   },
   guestBtnText: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 12,
+    fontSize: 12.5,
     fontWeight: '700',
     color: '#171416',
   },
   reassuranceText: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 9.5,
+    fontSize: 10,
     color: '#888482',
     textAlign: 'center',
     fontWeight: '500',
-    paddingBottom: 2,
+    paddingTop: 2,
   },
 });
