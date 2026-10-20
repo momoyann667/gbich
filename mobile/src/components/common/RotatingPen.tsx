@@ -6,17 +6,17 @@ interface RotatingPenProps {
 }
 
 /**
- * Stylo plume de caricaturiste rouge officiel GBICH!
- * Tourne en continu sur lui-même (spin 360°) avec animation fluide.
+ * Stylo plume / crayon satirique officiel GBICH!
+ * Basé sur l'asset visuel fourni par l'utilisateur avec vibration / rotation 360° infinie.
  */
-export const RotatingPen: React.FC<RotatingPenProps> = ({ size = 18 }) => {
+export const RotatingPen: React.FC<RotatingPenProps> = ({ size = 22 }) => {
   const spinAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const animation = Animated.loop(
       Animated.timing(spinAnim, {
         toValue: 1,
-        duration: 2600,
+        duration: 2200,
         easing: Easing.linear,
         useNativeDriver: true,
       })
@@ -32,24 +32,18 @@ export const RotatingPen: React.FC<RotatingPenProps> = ({ size = 18 }) => {
 
   return (
     <View style={[styles.container, { width: size, height: size }]}>
-      <Animated.View
+      <Animated.Image
+        source={require('../../../assets/pen_icon.png')}
         style={[
-          styles.penWrapper,
+          styles.image,
           {
             width: size,
             height: size,
             transform: [{ rotate: spin }],
           },
         ]}
-      >
-        {/* Corps du stylo plume satirique */}
-        <View style={styles.penBody} />
-        {/* Bague métallique / encre noire */}
-        <View style={styles.penRing} />
-        {/* Pointe / Plume de dessin rouge */}
-        <View style={styles.penNib} />
-        <View style={styles.penNibTip} />
-      </Animated.View>
+        resizeMode="contain"
+      />
     </View>
   );
 };
@@ -58,42 +52,10 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 6,
+    marginRight: 8,
   },
-  penWrapper: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  penBody: {
-    width: 4,
-    height: 9,
-    backgroundColor: '#B70014',
-    borderTopLeftRadius: 2,
-    borderTopRightRadius: 2,
-    borderWidth: 0.8,
-    borderColor: '#171416',
-  },
-  penRing: {
-    width: 5,
-    height: 1.8,
-    backgroundColor: '#FAF7F2',
-    borderWidth: 0.6,
-    borderColor: '#171416',
-  },
-  penNib: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 3,
-    borderRightWidth: 3,
-    borderTopWidth: 5,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    borderTopColor: '#B70014',
-  },
-  penNibTip: {
-    width: 1,
-    height: 2,
-    backgroundColor: '#171416',
-    marginTop: -0.5,
+  image: {
+    width: '100%',
+    height: '100%',
   },
 });

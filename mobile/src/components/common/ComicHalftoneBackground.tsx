@@ -6,15 +6,15 @@ interface ComicHalftoneBackgroundProps {
 }
 
 /**
- * Arrière-plan Comic Brutalism fidèle à GBICH! :
- * - Trame halftone discrète (grille de micro-croix régulières)
- * - Faisceaux dynamiques en soleil satirique (comic burst)
- * - Onomatopées en filigrane (GBICH!, TCHROUO!, POW!, Y'A DRAP!)
+ * Arrière-plan Comic Brutalism fidèle aux directives BD GBICH! :
+ * - Trame halftone discrète (grille de micro-points réguliers)
+ * - Faisceaux solaires satiriques (comic burst)
+ * - Onomatopées stylisées avec contour noir : "GBICH!", "WOUAH!", "TCHIE!" en Anton/Bebas Neue inclinée.
  */
 export const ComicHalftoneBackground: React.FC<ComicHalftoneBackgroundProps> = ({ children }) => {
   return (
     <View style={styles.container}>
-      {/* 1. Motif de trame Halftone en arrière-plan */}
+      {/* 1. Trame Halftone en arrière-plan */}
       <View
         style={[
           styles.halftoneGrid,
@@ -37,15 +37,47 @@ export const ComicHalftoneBackground: React.FC<ComicHalftoneBackgroundProps> = (
         ))}
       </View>
 
-      {/* 3. Filigranes Onomatopées Comic d'Abidjan */}
+      {/* 3. Onomatopées stylisées avec contour noir : GBICH!, WOUAH!, TCHIE! */}
       <View pointerEvents="none" style={styles.watermarkLayer}>
-        <Text style={[styles.watermarkText, styles.watermarkGbich1]}>GBICH!</Text>
-        <Text style={[styles.watermarkText, styles.watermarkTchrouo]}>TCHROUO!</Text>
-        <Text style={[styles.watermarkText, styles.watermarkGbich2]}>GBICH!</Text>
-        <Text style={[styles.watermarkText, styles.watermarkPow]}>POW!</Text>
+        <Text
+          style={[
+            styles.watermarkText,
+            styles.watermarkGbich1,
+            Platform.OS === 'web' && (webWatermarkStyles.webStroke as any),
+          ]}
+        >
+          GBICH!
+        </Text>
+        <Text
+          style={[
+            styles.watermarkText,
+            styles.watermarkWouah,
+            Platform.OS === 'web' && (webWatermarkStyles.webStroke as any),
+          ]}
+        >
+          WOUAH!
+        </Text>
+        <Text
+          style={[
+            styles.watermarkText,
+            styles.watermarkTchie,
+            Platform.OS === 'web' && (webWatermarkStyles.webStroke as any),
+          ]}
+        >
+          TCHIE!
+        </Text>
+        <Text
+          style={[
+            styles.watermarkText,
+            styles.watermarkGbich2,
+            Platform.OS === 'web' && (webWatermarkStyles.webStroke as any),
+          ]}
+        >
+          GBICH!
+        </Text>
       </View>
 
-      {/* Contenu principal de l'écran */}
+      {/* Contenu principal */}
       <View style={styles.content}>{children}</View>
     </View>
   );
@@ -54,7 +86,7 @@ export const ComicHalftoneBackground: React.FC<ComicHalftoneBackgroundProps> = (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FAF7F2', // Fond papier journal chaud
+    backgroundColor: '#FAF7F2',
     position: 'relative',
     overflow: 'hidden',
   },
@@ -97,39 +129,42 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
     fontWeight: '900',
-    color: '#171416',
+    color: 'rgba(23, 20, 22, 0.05)',
     letterSpacing: 2,
   },
   watermarkGbich1: {
-    top: 60,
-    left: 16,
-    fontSize: 52,
-    opacity: 0.04,
-    transform: [{ rotate: '-8deg' }],
+    top: 50,
+    left: 12,
+    fontSize: 54,
+    transform: [{ rotate: '-10deg' }],
   },
-  watermarkTchrouo: {
-    top: '36%',
+  watermarkWouah: {
+    top: '35%',
     right: -10,
-    fontSize: 42,
-    opacity: 0.035,
+    fontSize: 46,
     transform: [{ rotate: '12deg' }],
+  },
+  watermarkTchie: {
+    top: '52%',
+    left: '3%',
+    fontSize: 42,
+    transform: [{ rotate: '-8deg' }],
   },
   watermarkGbich2: {
     bottom: 160,
-    left: -12,
-    fontSize: 64,
-    opacity: 0.05,
-    transform: [{ rotate: '-4deg' }],
-  },
-  watermarkPow: {
-    top: '52%',
-    left: '4%',
-    fontSize: 38,
-    opacity: 0.03,
-    transform: [{ rotate: '15deg' }],
+    right: 8,
+    fontSize: 60,
+    transform: [{ rotate: '8deg' }],
   },
   content: {
     flex: 1,
     zIndex: 2,
   },
 });
+
+const webWatermarkStyles = {
+  webStroke: {
+    WebkitTextStroke: '1.2px rgba(23, 20, 22, 0.12)',
+    color: 'transparent',
+  },
+};
