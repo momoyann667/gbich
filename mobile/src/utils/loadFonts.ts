@@ -27,6 +27,15 @@ export function injectWebFonts() {
     const style = document.createElement('style');
     style.id = styleId;
     style.innerHTML = `
+      @keyframes spin360 {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .gbich-rotating-pen {
+        animation: spin360 2.2s linear infinite !important;
+        transform-origin: center center;
+        display: inline-block;
+      }
       @keyframes candyStripe {
         0% { background-position: 0 0; }
         100% { background-position: 36px 0; }

@@ -281,15 +281,15 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
         {/* BAS DE PAGE : CARTOUCHE BD DE CHARGEMENT & ACTION BRUTALISTE */}
         {/* ========================================================= */}
         <Animated.View style={[styles.bottomSection, { opacity: entranceAnim }]}>
-          {/* Indicateur de chargement stylisé en cartouche BD */}
+          {/* Indicateur de chargement stylisé en cartouche BD fidèle à la capture */}
           <View style={styles.loadingCard}>
             <View style={styles.loadingTopRow}>
-              {/* Stylo plume rouge authentique qui tourne indéfiniment sur lui-même */}
+              {/* Stylo plume rouge authentique qui tourne indéfiniment à 360° */}
               <RotatingPen size={22} />
 
-              {/* Mention satirique amusante demandée dans la capture */}
-              <Text style={styles.loadingStatusText} numberOfLines={2}>
-                Aiguisage des crayons et chargement de la bonne humeur ivoirienne...
+              {/* Texte exact : Prêt à krou ! Touchez ci-dessous pour en... */}
+              <Text style={styles.loadingStatusText} numberOfLines={1}>
+                Prêt à krou ! Touchez ci-dessous pour en...
               </Text>
               <Text style={styles.percentText}>{progressPercent}%</Text>
             </View>
@@ -315,15 +315,18 @@ export const SplashScreen: React.FC<SplashScreenProps> = ({ onExplore, navigatio
               />
             </View>
 
-            {/* Ligne inférieure : Badge PWA v2.0 - Édition Abidjan & Connexion */}
+            {/* Ligne inférieure : Métadonnées exactes comme sur la capture */}
             <View style={styles.loadingBottomRow}>
-              {/* Badge PWA v2.0 - Édition Abidjan demandé en bas */}
-              <View style={styles.badgePwaBottom}>
-                <View style={styles.badgePwaDot} />
-                <Text style={styles.badgePwaText}>PWA v2.0 - Édition Abidjan</Text>
+              <View style={styles.locationGroup}>
+                <View style={styles.locationDot} />
+                <Text style={styles.metaSubText}>
+                  {"Treichville • Yopougon •\nCocody"}
+                </Text>
               </View>
 
-              <Text style={styles.metaSubText}>Connexion : Sécurisée</Text>
+              <Text style={[styles.metaSubText, styles.metaSubTextRight]}>
+                {"Connexion satirique :\nSécurisée"}
+              </Text>
             </View>
           </View>
 
@@ -607,37 +610,30 @@ const styles = StyleSheet.create({
   loadingBottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingTop: 2,
+    alignItems: 'flex-start',
+    paddingTop: 4,
   },
-  badgePwaBottom: {
+  locationGroup: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    backgroundColor: '#FAF7F2',
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: '#171416',
+    alignItems: 'flex-start',
+    gap: 6,
   },
-  badgePwaDot: {
+  locationDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: '#F5222D',
-  },
-  badgePwaText: {
-    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#171416',
+    backgroundColor: '#8B5A52',
+    marginTop: 3,
   },
   metaSubText: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
-    fontSize: 10,
-    fontWeight: '500',
+    fontSize: 9.5,
+    lineHeight: 13,
+    fontWeight: '600',
     color: '#625D5F',
+  },
+  metaSubTextRight: {
+    textAlign: 'left',
   },
 
   // Bouton d'Action avec ombre dure 4px 4px #171416 et bordure 3px noir encre

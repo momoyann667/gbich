@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, Easing, StyleSheet, View } from 'react-native';
+import { Animated, Easing, Platform, StyleSheet, View } from 'react-native';
 
 interface RotatingPenProps {
   size?: number;
@@ -7,7 +7,7 @@ interface RotatingPenProps {
 
 /**
  * Stylo plume / crayon satirique officiel GBICH!
- * Basé sur l'asset visuel fourni par l'utilisateur avec vibration / rotation 360° infinie.
+ * Basé sur l'asset visuel fourni par l'utilisateur avec rotation 360° infinie garantie.
  */
 export const RotatingPen: React.FC<RotatingPenProps> = ({ size = 22 }) => {
   const spinAnim = useRef(new Animated.Value(0)).current;
@@ -18,7 +18,7 @@ export const RotatingPen: React.FC<RotatingPenProps> = ({ size = 22 }) => {
         toValue: 1,
         duration: 2200,
         easing: Easing.linear,
-        useNativeDriver: true,
+        useNativeDriver: Platform.OS !== 'web',
       })
     );
     animation.start();
@@ -41,7 +41,9 @@ export const RotatingPen: React.FC<RotatingPenProps> = ({ size = 22 }) => {
             height: size,
             transform: [{ rotate: spin }],
           },
+          Platform.OS === 'web' && ({ animation: 'spin360 2.2s linear infinite' } as any),
         ]}
+        {...({ className: 'gbich-rotating-pen' } as any)}
         resizeMode="contain"
       />
     </View>
