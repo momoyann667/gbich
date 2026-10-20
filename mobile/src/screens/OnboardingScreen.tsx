@@ -476,11 +476,11 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   drapText: {
-    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: 14,
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 13,
     color: '#B70014',
-    letterSpacing: 0.6,
-    fontWeight: '900',
+    letterSpacing: 0.5,
+    fontWeight: '700',
   },
   kpanSticker: {
     position: 'absolute',
@@ -500,11 +500,11 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   kpanText: {
-    fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: 14,
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 13,
     color: '#FFFFFF',
     letterSpacing: 0.8,
-    fontWeight: '900',
+    fontWeight: '700',
   },
   cardTextContent: {
     paddingHorizontal: 16,
