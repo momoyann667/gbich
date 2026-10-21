@@ -36,6 +36,7 @@ export const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+  const [btnPressed, setBtnPressed] = useState(false);
 
   // États d'envoi et de feedback
   const [isLoading, setIsLoading] = useState(false);
@@ -206,7 +207,14 @@ export const LoginScreen: React.FC = () => {
                     <Text style={styles.requiredTag}>REQUIS</Text>
                   </View>
 
-                  <View style={styles.inputWrapper}>
+                  <View
+                    style={[
+                      styles.inputWrapper,
+                      Platform.OS === 'web' && ({
+                        boxShadow: '3px 3px 0px #121212',
+                      } as any),
+                    ]}
+                  >
                     <Text style={styles.inputLeftIcon}>👤</Text>
                     <TextInput
                       style={[
@@ -241,7 +249,14 @@ export const LoginScreen: React.FC = () => {
                     </TouchableOpacity>
                   </View>
 
-                  <View style={styles.inputWrapper}>
+                  <View
+                    style={[
+                      styles.inputWrapper,
+                      Platform.OS === 'web' && ({
+                        boxShadow: '3px 3px 0px #121212',
+                      } as any),
+                    ]}
+                  >
                     <Text style={styles.inputLeftIcon}>🔒</Text>
                     <TextInput
                       style={[
@@ -270,7 +285,7 @@ export const LoginScreen: React.FC = () => {
                   </View>
                 </View>
 
-                {/* Case à cocher simple */}
+                {/* Case à cocher néo-brutaliste */}
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => setRememberMe(!rememberMe)}
@@ -280,6 +295,9 @@ export const LoginScreen: React.FC = () => {
                     style={[
                       styles.checkboxBox,
                       rememberMe && styles.checkboxActive,
+                      Platform.OS === 'web' && ({
+                        boxShadow: '3px 3px 0px #121212',
+                      } as any),
                     ]}
                   >
                     {rememberMe ? <Text style={styles.checkboxCheck}>✓</Text> : null}
@@ -290,16 +308,24 @@ export const LoginScreen: React.FC = () => {
                 </TouchableOpacity>
 
                 {/* ========================================================= */}
-                {/* 5. BOUTON D'ACTION PRINCIPAL ÉPURÉ                        */}
+                {/* 5. BOUTON D'ACTION PRINCIPAL AVEC EFFET TACTILE           */}
                 {/* ========================================================= */}
                 <TouchableOpacity
-                  activeOpacity={0.88}
+                  activeOpacity={0.92}
                   onPress={handleLogin}
+                  onPressIn={() => setBtnPressed(true)}
+                  onPressOut={() => setBtnPressed(false)}
                   disabled={isLoading}
                   style={[
                     styles.submitBtn,
+                    btnPressed && styles.submitBtnPressed,
                     isLoading && styles.submitBtnDisabled,
-                    Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                    Platform.OS === 'web' && ({
+                      cursor: 'pointer',
+                      boxShadow: btnPressed ? '0px 0px 0px #121212' : '4px 4px 0px #121212',
+                      transform: btnPressed ? 'translate(3px, 3px)' : 'none',
+                      transition: 'transform 0.08s ease, box-shadow 0.08s ease',
+                    } as any),
                   ]}
                 >
                   {isLoading ? (
@@ -319,43 +345,15 @@ export const LoginScreen: React.FC = () => {
                   )}
                 </TouchableOpacity>
 
-                {/* Séparateur simple */}
-                <View style={styles.dividerRow}>
-                  <View style={styles.dividerLine} />
-                  <View style={styles.dividerBadge}>
-                    <Text style={styles.dividerText}>OU EN UN SEUL CLIC</Text>
-                  </View>
-                </View>
-
-                {/* Boutons de connexion rapide simples */}
-                <View style={styles.oauthRow}>
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => alert("Connexion avec Google en cours... Ya pas drap !")}
-                    style={[
-                      styles.oauthBtn,
-                      Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-                    ]}
-                  >
-                    <Text style={styles.oauthIcon}>🌐</Text>
-                    <Text style={styles.oauthText}>GOOGLE</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => alert("Connexion Orange / MTN Money en cours... Ya pas drap !")}
-                    style={[
-                      styles.oauthBtn,
-                      Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-                    ]}
-                  >
-                    <Text style={styles.oauthIcon}>📱</Text>
-                    <Text style={styles.oauthText}>ORANGE / MTN</Text>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Encart Création de Compte */}
-                <View style={styles.registerCard}>
+                {/* Encart Création de Compte néo-brutaliste */}
+                <View
+                  style={[
+                    styles.registerCard,
+                    Platform.OS === 'web' && ({
+                      boxShadow: '3px 3px 0px #121212',
+                    } as any),
+                  ]}
+                >
                   <Text style={styles.registerCardPrompt}>
                     Pas encore membre de la bande ?
                   </Text>
@@ -373,7 +371,7 @@ export const LoginScreen: React.FC = () => {
               </View>
 
               {/* ========================================================= */}
-              {/* 6. PIED DE PAGE                                           */}
+              {/* 6. PIED DE PAGE REHAUSSÉ                                  */}
               {/* ========================================================= */}
               <View style={styles.footerSection}>
                 <View style={styles.footerDot} />
@@ -614,16 +612,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#D4D0CC',
-    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#121212',
+    borderRadius: 10,
     paddingHorizontal: 14,
     height: 50,
-    shadowColor: '#171416',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
+    shadowColor: '#121212',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
   },
   inputLeftIcon: {
     fontSize: 16,
@@ -645,7 +643,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // Checkbox simple
+  // Checkbox néo-brutaliste
   rememberRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -656,15 +654,20 @@ const styles = StyleSheet.create({
     width: 22,
     height: 22,
     borderRadius: 6,
-    borderWidth: 1.8,
-    borderColor: '#171416',
+    borderWidth: 2,
+    borderColor: '#121212',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#121212',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 2,
   },
   checkboxActive: {
     backgroundColor: '#F5222D',
-    borderColor: '#F5222D',
+    borderColor: '#121212',
   },
   checkboxCheck: {
     color: '#FFFFFF',
@@ -679,20 +682,27 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // 5. Bouton principal propre et percutant
+  // 5. Bouton principal néo-brutaliste
   submitBtn: {
     width: '100%',
     backgroundColor: '#F5222D',
+    borderWidth: 3,
+    borderColor: '#121212',
     borderRadius: 14,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#F5222D',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.28,
-    shadowRadius: 10,
-    elevation: 4,
-    marginTop: 4,
+    shadowColor: '#121212',
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 5,
+    marginTop: 6,
+  },
+  submitBtnPressed: {
+    transform: [{ translateX: 3 }, { translateY: 3 }],
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 0,
   },
   submitBtnDisabled: {
     opacity: 0.85,
@@ -719,80 +729,23 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
-  // Séparateur simple
-  dividerRow: {
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 4,
-  },
-  dividerLine: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    height: 1,
-    backgroundColor: '#E5E2DF',
-  },
-  dividerBadge: {
-    backgroundColor: '#EBE8E5',
-    paddingVertical: 3,
-    paddingHorizontal: 12,
-    borderRadius: 9999,
-  },
-  dividerText: {
-    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#625D5F',
-    letterSpacing: 0.8,
-  },
-
-  // OAuth Row simple
-  oauthRow: {
-    flexDirection: 'row',
-    gap: 10,
-    width: '100%',
-  },
-  oauthBtn: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#D4D0CC',
-    borderRadius: 12,
-    paddingVertical: 11,
-    gap: 8,
-    shadowColor: '#171416',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 3,
-    elevation: 1,
-  },
-  oauthIcon: {
-    fontSize: 16,
-  },
-  oauthText: {
-    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#171416',
-    letterSpacing: 0.5,
-  },
-
-  // Carte Inscription
+  // Carte Inscription néo-brutaliste
   registerCard: {
     backgroundColor: '#F0EDEA',
-    borderWidth: 1.5,
-    borderColor: '#E5E2DF',
+    borderWidth: 2,
+    borderColor: '#121212',
     borderRadius: 12,
-    paddingVertical: 11,
+    paddingVertical: 12,
     paddingHorizontal: 14,
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
-    marginTop: 2,
+    marginTop: 10,
+    shadowColor: '#121212',
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 3,
   },
   registerCardPrompt: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
@@ -809,14 +762,15 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
 
-  // 6. Pied de page
+  // 6. Pied de page rehaussé
   footerSection: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    paddingTop: 8,
-    paddingBottom: 4,
+    paddingTop: 6,
+    paddingBottom: 16,
+    marginBottom: 4,
   },
   footerDot: {
     width: 6,
