@@ -9,12 +9,14 @@ import { MainTabNavigator } from './MainTabNavigator';
 import { SplashScreen } from '../screens/SplashScreen';
 import { OnboardingScreen } from '../screens/OnboardingScreen';
 import { LoginScreen } from '../screens/LoginScreen';
+import { RegisterScreen } from '../screens/RegisterScreen';
 import { GBICH_COLORS } from '../theme/tokens';
 
 export type RootStackParamList = {
   Splash: undefined;
   Onboarding: undefined;
   Login: undefined;
+  Register: undefined;
   MainTabs: undefined;
 };
 
@@ -45,6 +47,7 @@ export const RootNavigator: React.FC = () => {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Onboarding" component={OnboardingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
         <Stack.Screen name="MainTabs" component={MainTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>

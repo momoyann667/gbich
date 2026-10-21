@@ -335,9 +335,7 @@ export const LoginScreen: React.FC = () => {
                   </Text>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    onPress={() => {
-                      alert("Ya pas drap ! Remplis tes coordonnées pour intégrer le djassa GBICH!.");
-                    }}
+                    onPress={() => navigation.navigate('Register')}
                   >
                     <Text style={styles.registerCardLink}>
                       CRÉER UN COMPTE ICI (C'EST GRATUIT !)

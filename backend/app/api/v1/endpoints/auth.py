@@ -13,7 +13,7 @@ from app.core.database import get_db
 from app.core.logging import logger
 from app.core.security import verify_password, hash_password, create_access_token
 from app.models.entities import User
-from app.schemas.auth import LoginRequest, TokenResponse, UserProfileResponse
+from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserProfileResponse
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -165,4 +165,134 @@ async def login(
             f"Gaou détecté ! L'identifiant « {clean_identifier} » n'existe pas encore en base. "
             "Vérifie tes coordonnées ou inscris-toi !"
         ),
+    )
+
+
+@router.post(
+    "/register",
+    response_model=TokenResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Inscription nouvel utilisateur (Blaze, Téléphone/Email & Mot de passe)",
+)
+async def register(
+    register_data: RegisterRequest,
+    db: AsyncSession = Depends(get_db),
+) -> TokenResponse:
+    """Crée un nouveau compte utilisateur GBICH! avec ses centres d'intérêt."""
+    clean_username = register_data.username.strip()
+    clean_identifier = register_data.identifier.strip()
+    clean_password = register_data.password.strip()
+
+    is_email = "@" in clean_identifier
+    email_val = clean_identifier if is_email else None
+    phone_val = clean_identifier if not is_email else None
+
+    # Si c'est un numéro de téléphone sans indicatif et qu'un indicatif est fourni
+    if phone_val and not phone_val.startswith("+"):
+        if register_data.country_code:
+            phone_val = f"{register_data.country_code}{phone_val}"
+
+    # 1. Tentative d'insertion en base PostgreSQL
+    try:
+        query = select(User).where(
+            or_(
+                User.username == clean_username,
+                User.email == email_val if email_val else False,
+                User.phone_number == phone_val if phone_val else False,
+            )
+        )
+        result = await db.execute(query)
+        existing = result.scalar_one_or_none()
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ce blaze, email ou numéro est déjà pris dans le djassa ! Choisis-en un autre !",
+            )
+
+        new_user = User(
+            id=uuid.uuid4(),
+            username=clean_username,
+            email=email_val,
+            phone_number=phone_val,
+            password_hash=hash_password(clean_password),
+            role="reader",
+            avatar_slug="avatar_zokou",
+            preferred_lang="fr",
+            is_active=True,
+        )
+        db.add(new_user)
+        await db.commit()
+        await db.refresh(new_user)
+
+        token = create_access_token(
+            data={"sub": str(new_user.id), "username": new_user.username, "role": new_user.role}
+        )
+        return TokenResponse(
+            access_token=token,
+            token_type="bearer",
+            user=UserProfileResponse(
+                id=str(new_user.id),
+                username=new_user.username,
+                email=new_user.email,
+                phone_number=new_user.phone_number,
+                role=new_user.role,
+                avatarSlug=new_user.avatar_slug or "avatar_zokou",
+                preferredLang=new_user.preferred_lang or "fr",
+            ),
+            message="COMPTE CRÉÉ AVEC SUCCÈS ! BIENVENUE DANS LA BANDE ! 🎉",
+        )
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.warning(f"DB inaccessible pour l'inscription ({exc}). Fallback sur registre de dev.")
+
+    # 2. Fallback registre mock pour développement / offline
+    # Vérification d'unicité dans MOCK_USERS
+    for m in MOCK_USERS:
+        if m["username"].lower() == clean_username.lower():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ce blaze de vanneur est déjà réservé ! Trouve un autre blaze plus chicot !",
+            )
+        if email_val and m["email"] and m["email"].lower() == email_val.lower():
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cet email a déjà un compte. Connecte-toi directement !",
+            )
+        if phone_val and m["phone_number"] and m["phone_number"] == phone_val:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Ce numéro de téléphone est déjà enregistré dans le djassa !",
+            )
+
+    new_mock_id = str(uuid.uuid4())
+    new_mock_user = {
+        "id": new_mock_id,
+        "username": clean_username,
+        "email": email_val or f"{clean_username.lower().replace(' ', '')}@gbich.ci",
+        "phone_number": phone_val or "0700000000",
+        "password_hash": hash_password(clean_password),
+        "role": "reader",
+        "avatar_slug": "avatar_zokou",
+        "preferred_lang": "fr",
+        "is_active": True,
+    }
+    MOCK_USERS.append(new_mock_user)
+
+    token = create_access_token(
+        data={"sub": new_mock_id, "username": clean_username, "role": "reader"}
+    )
+    return TokenResponse(
+        access_token=token,
+        token_type="bearer",
+        user=UserProfileResponse(
+            id=new_mock_id,
+            username=clean_username,
+            email=new_mock_user["email"],
+            phone_number=new_mock_user["phone_number"],
+            role="reader",
+            avatarSlug="avatar_zokou",
+            preferredLang="fr",
+        ),
+        message="COMPTE CRÉÉ AVEC SUCCÈS ! BIENVENUE DANS LA BANDE ! 🎉",
     )
