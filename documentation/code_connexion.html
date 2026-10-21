@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html lang="fr"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_stack" name="shell-type"/><title>Login - GBICH!</title><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Anton&amp;family=Bebas+Neue&amp;family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@700&amp;display=swap" rel="stylesheet"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { "on-background": "#1c1c1a", "surface-variant": "#e5e2df", "surface-container-low": "#f6f3f0", "on-tertiary": "#ffffff", "tertiary-fixed": "#ffdad7", "on-secondary": "#ffffff", "surface-bright": "#fcf9f6", "on-tertiary-container": "#fffbff", "on-error": "#ffffff", "surface-container-high": "#ebe8e5", "on-tertiary-fixed-variant": "#930013", "primary-fixed": "#ffdad6", "outline": "#936e6b", "primary-fixed-dim": "#ffb3ad", "on-surface-variant": "#5e3f3c", "primary-container": "#e71325", "on-primary-container": "#fffbff", "on-primary": "#ffffff", "error-container": "#ffdad6", "on-secondary-fixed-variant": "#4a4648", "on-secondary-container": "#686365", "tertiary-fixed-dim": "#ffb3ad", "surface": "#fcf9f6", "secondary-fixed": "#e8e0e3", "inverse-surface": "#31302f", "secondary": "#625d5f", "surface-container-highest": "#e5e2df", "surface-container-lowest": "#ffffff", "on-primary-fixed-variant": "#930010", "tertiary-container": "#d83738", "surface-dim": "#dcd9d7", "surface-tint": "#c00019", "background": "#fcf9f6", "on-secondary-fixed": "#1e1b1d", "inverse-on-surface": "#f3f0ed", "on-surface": "#1c1c1a", "inverse-primary": "#ffb3ad", "surface-container": "#f0edea", "primary": "#bb0018", "secondary-fixed-dim": "#ccc5c7", "error": "#ba1a1a", "on-primary-fixed": "#410003", "secondary-container": "#e8e0e3", "tertiary": "#b41b23", "outline-variant": "#e8bcb8", "on-error-container": "#93000a", "on-tertiary-fixed": "#410004" }, borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" }, spacing: { "space-lg": "1.5rem", "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "space-xl": "2rem", "margin": "1rem" }, fontFamily: { "subheading-lg": ["Bebas Neue"], "body-lg": ["Inter"], "headline-lg-mobile": ["Anton"], "label-md": ["Space Grotesk"], "headline-sm": ["Anton"], "body-sm": ["Inter"], "body-md": ["Inter"], "label-lg": ["Space Grotesk"], "subheading-md": ["Bebas Neue"], "headline-md": ["Anton"], "label-sm": ["Space Grotesk"], "headline-lg": ["Anton"], "headline-xl": ["Anton"] }, fontSize: { "subheading-lg": ["24px", { "lineHeight": "28px", "letterSpacing": "0.04em", "fontWeight": "400" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }], "headline-lg-mobile": ["30px", { "lineHeight": "34px", "letterSpacing": "0.02em", "fontWeight": "400" }], "label-md": ["14px", { "lineHeight": "18px", "letterSpacing": "0.01em", "fontWeight": "700" }], "headline-sm": ["22px", { "lineHeight": "26px", "letterSpacing": "0.01em", "fontWeight": "400" }], "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }], "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }], "label-lg": ["16px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "700" }], "subheading-md": ["20px", { "lineHeight": "24px", "letterSpacing": "0.03em", "fontWeight": "400" }], "headline-md": ["28px", { "lineHeight": "32px", "letterSpacing": "0.01em", "fontWeight": "400" }], "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "700" }], "headline-lg": ["36px", { "lineHeight": "40px", "letterSpacing": "0.02em", "fontWeight": "400" }], "headline-xl": ["48px", { "lineHeight": "52px", "letterSpacing": "0.02em", "fontWeight": "400" }] } } } };</script><style>@layer base { html, body { width: 100vw; margin: 0; padding: 0; } body { overscroll-behavior: none; } .pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); } .pt-safe { padding-top: env(safe-area-inset-top, 0px); } main > :first-child { margin-top: 0 !important; } main > :last-child { margin-bottom: 0 !important; } } ::-webkit-scrollbar { display: none; }</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head><body class="bg-background text-on-surface font-body-md text-body-md min-h-screen flex flex-col antialiased"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 max-w-[480px] mx-auto px-margin flex items-center justify-between"><div class="flex items-center gap-space-sm"><button aria-label="Retour" class="w-11 h-11 flex items-center justify-center text-on-surface hover:text-primary transition-colors" onclick="history.back()" type="button"><span class="material-symbols-outlined text-[24px]">arrow_back</span></button><img alt="logo_gbich_v2.png" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1Wx0Kw612UBMkkz_ttxbjnDUUGFL8J0qrAyXIBCWkk94lIEU1yWmFRqgfmb17ZHqDVm_X4_kzWFeazC-EFC5_YC0NQWLJeQSL32psdfHU6fSyhx-1pkE683QworocpVSyZ9340K1yy13etfULa8smbHFMxtMCPVumaldpHQaRt8DezcPTQryg5J8Et2en6il3iGv8MoJ_sB1xwtH8pU7trtPR8mmYbYzDkr0i6tp4iaO_6jKSB3YAuX9yAZRH98Tw1MLIHk-N4i"/><span class="font-headline-sm text-headline-sm uppercase text-on-surface tracking-wide hidden xs:inline">GBICH!</span></div><div class="flex items-center gap-space-sm"><span class="font-subheading-md text-subheading-md uppercase text-primary px-space-xs tracking-wider">Login</span><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0 shadow-[0_2px_4px_rgba(23,20,22,0.25)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full max-w-[480px] mx-auto pt-16 bg-surface px-margin pb-safe"><div class="flex flex-col w-full pb-8">
+<div class="flex flex-col w-full space-y-4">
+<!-- STITCH_SVG_START:ANIMATION_15 class="w-full h-48 rounded-xl shadow-[4px_4px_0px_#1c1c1a] overflow-hidden mb-1" --><div class="w-full h-48 rounded-xl shadow-[4px_4px_0px_#1c1c1a] overflow-hidden mb-1" id="animated-svg-ANIMATION_15" style="display:block;"><svg height="100%" viewbox="0 0 600 240" width="100%" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<style>
+      @keyframes runTrack {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-160px); }
+      }
+      @keyframes cloudsMove {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-300px); }
+      }
+      @keyframes runnerFrontBob {
+        0%, 100% { transform: translateY(0px) rotate(-4deg); }
+        50% { transform: translateY(-10px) rotate(4deg); }
+      }
+      @keyframes runnerBackBob {
+        0%, 100% { transform: translateY(0px) rotate(6deg); }
+        50% { transform: translateY(-12px) rotate(-2deg); }
+      }
+      @keyframes legCycleFront1 {
+        0%, 100% { transform: rotate(38deg); }
+        50% { transform: rotate(-38deg); }
+      }
+      @keyframes legCycleFront2 {
+        0%, 100% { transform: rotate(-38deg); }
+        50% { transform: rotate(38deg); }
+      }
+      @keyframes armCycleFront1 {
+        0%, 100% { transform: rotate(-45deg); }
+        50% { transform: rotate(45deg); }
+      }
+      @keyframes armCycleFront2 {
+        0%, 100% { transform: rotate(45deg); }
+        50% { transform: rotate(-45deg); }
+      }
+      @keyframes sweatPop {
+        0%, 100% { opacity: 0; transform: scale(0.4) translate(0, 0); }
+        50% { opacity: 1; transform: scale(1.2) translate(-15px, -15px); }
+      }
+      @keyframes dustPuff {
+        0% { opacity: 0.9; transform: scale(0.6) translate(0, 0); }
+        50% { opacity: 0.5; transform: scale(1.1) translate(-25px, -5px); }
+        100% { opacity: 0; transform: scale(1.4) translate(-45px, -12px); }
+      }
+      @keyframes chappieWobble {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-15deg); }
+        75% { transform: rotate(15deg); }
+      }
+
+      .bg-ground-line { stroke: #121212; stroke-width: 4; stroke-linecap: round; }
+      .speed-line { stroke: #F5222D; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 20 15; animation: runTrack 0.4s linear infinite; }
+      .speed-line-dark { stroke: #121212; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 30 20; animation: runTrack 0.3s linear infinite; }
+      
+      .runner-front { animation: runnerFrontBob 0.32s infinite ease-in-out; transform-origin: 390px 145px; }
+      .runner-back { animation: runnerBackBob 0.32s infinite ease-in-out 0.16s; transform-origin: 190px 145px; }
+      
+      .leg-f1 { transform-origin: 385px 150px; animation: legCycleFront1 0.32s infinite linear; }
+      .leg-f2 { transform-origin: 385px 150px; animation: legCycleFront2 0.32s infinite linear; }
+      .arm-f1 { transform-origin: 380px 115px; animation: armCycleFront1 0.32s infinite linear; }
+      .arm-f2 { transform-origin: 380px 115px; animation: armCycleFront2 0.32s infinite linear; }
+
+      .leg-b1 { transform-origin: 185px 150px; animation: legCycleFront2 0.32s infinite linear; }
+      .leg-b2 { transform-origin: 185px 150px; animation: legCycleFront1 0.32s infinite linear; }
+      .arm-b1 { transform-origin: 180px 115px; animation: armCycleFront2 0.32s infinite linear; }
+      .arm-b2 { transform-origin: 180px 115px; animation: armCycleFront1 0.32s infinite linear; }
+
+      .sweat { animation: sweatPop 0.6s infinite ease-out; }
+      .dust1 { animation: dustPuff 0.35s infinite linear; }
+      .dust2 { animation: dustPuff 0.35s infinite linear 0.17s; }
+      .chappie { animation: chappieWobble 0.25s infinite ease-in-out; transform-origin: 215px 75px; }
+    </style>
+</defs>
+<!-- Background decorative comic pattern -->
+<rect fill="#FCF9F6" height="240" rx="16" width="600"></rect>
+<rect fill="none" height="240" rx="16" stroke="#121212" stroke-width="4" width="600"></rect>
+<!-- Comic Ben-day dots watermark pattern -->
+<g opacity="0.07">
+<circle cx="30" cy="30" fill="#121212" r="3"></circle>
+<circle cx="60" cy="30" fill="#121212" r="3"></circle>
+<circle cx="90" cy="30" fill="#121212" r="3"></circle>
+<circle cx="120" cy="30" fill="#121212" r="3"></circle>
+<circle cx="150" cy="30" fill="#121212" r="3"></circle>
+<circle cx="180" cy="30" fill="#121212" r="3"></circle>
+<circle cx="210" cy="30" fill="#121212" r="3"></circle>
+<circle cx="240" cy="30" fill="#121212" r="3"></circle>
+<circle cx="270" cy="30" fill="#121212" r="3"></circle>
+<circle cx="300" cy="30" fill="#121212" r="3"></circle>
+<circle cx="330" cy="30" fill="#121212" r="3"></circle>
+<circle cx="360" cy="30" fill="#121212" r="3"></circle>
+<circle cx="390" cy="30" fill="#121212" r="3"></circle>
+<circle cx="420" cy="30" fill="#121212" r="3"></circle>
+<circle cx="450" cy="30" fill="#121212" r="3"></circle>
+<circle cx="480" cy="30" fill="#121212" r="3"></circle>
+<circle cx="510" cy="30" fill="#121212" r="3"></circle>
+<circle cx="540" cy="30" fill="#121212" r="3"></circle>
+<circle cx="570" cy="30" fill="#121212" r="3"></circle>
+</g>
+<!-- Speed lines in background -->
+<line class="speed-line" opacity="0.4" x1="50" x2="550" y1="45" y2="45"></line>
+<line class="speed-line-dark" opacity="0.3" x1="20" x2="580" y1="95" y2="95"></line>
+<line class="speed-line" opacity="0.5" x1="70" x2="530" y1="180" y2="180"></line>
+<!-- Ground track line -->
+<line class="bg-ground-line" x1="20" x2="580" y1="195" y2="195"></line>
+<line stroke="#121212" stroke-dasharray="15 10" stroke-width="2" x1="10" x2="590" y1="205" y2="205"></line>
+<!-- Comic sound bubble / onomatopoeia -->
+<g transform="translate(470, 35)">
+<polygon fill="#FFE600" points="0,25 -15,40 10,32 30,50 45,28 65,35 60,15 80,0 55,-5 45,-25 25,-10 0,-20 -5,5" stroke="#121212" stroke-linejoin="round" stroke-width="3"></polygon>
+<text fill="#F5222D" font-family="'Impact', 'Arial Black', sans-serif" font-size="16" font-weight="900" text-anchor="middle" transform="rotate(-6 32 16)" x="32" y="16">WAP !</text>
+</g>
+<g transform="translate(110, 45)">
+<polygon fill="#FFFFFF" points="0,20 -12,32 8,26 25,40 38,22 55,28 50,12 68,0 46,-4 38,-20 20,-8 0,-15 -4,4" stroke="#121212" stroke-linejoin="round" stroke-width="3"></polygon>
+<text fill="#121212" font-family="'Impact', 'Arial Black', sans-serif" font-size="14" font-weight="900" text-anchor="middle" transform="rotate(5 28 14)" x="28" y="14">TCHÔÔ !</text>
+</g>
+<!-- ==================== RUNNER 2 (PURSUER / LE POURSUIVANT AVEC SA CHICOTTE) ==================== -->
+<g class="runner-back">
+<!-- Dust under feet -->
+<g class="dust1" transform="translate(150, 188)">
+<circle cx="0" cy="0" fill="#DCD9D7" r="9" stroke="#121212" stroke-width="2"></circle>
+<circle cx="-12" cy="-4" fill="#DCD9D7" r="6" stroke="#121212" stroke-width="2"></circle>
+<circle cx="-20" cy="2" fill="#DCD9D7" r="4" stroke="#121212" stroke-width="1.5"></circle>
+</g>
+<!-- Leg 2 (behind) -->
+<g class="leg-b2">
+<path d="M 185 148 L 165 178 L 145 188" fill="none" stroke="#121212" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"></path>
+<path d="M 185 148 L 165 178 L 145 188" fill="none" stroke="#F5222D" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"></path>
+<!-- Boot -->
+<path d="M 145 188 L 132 188 C 130 188 128 194 134 196 L 152 196 Z" fill="#121212"></path>
+</g>
+<!-- Leg 1 (front) -->
+<g class="leg-b1">
+<path d="M 185 148 L 205 176 L 225 188" fill="none" stroke="#121212" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"></path>
+<path d="M 185 148 L 205 176 L 225 188" fill="none" stroke="#F5222D" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"></path>
+<!-- Boot -->
+<path d="M 225 188 L 242 188 C 246 190 244 196 238 196 L 218 196 Z" fill="#121212"></path>
+</g>
+<!-- Torso -->
+<path d="M 170 108 L 200 115 L 188 155 L 165 148 Z" fill="#F5222D" stroke="#121212" stroke-linejoin="round" stroke-width="4"></path>
+<!-- Belt -->
+<line stroke="#FFE600" stroke-width="5" x1="168" x2="190" y1="148" y2="153"></line>
+<rect fill="#121212" height="7" width="6" x="176" y="147"></rect>
+<!-- Arm 2 (behind) -->
+<g class="arm-b2">
+<path d="M 178 115 L 150 125 L 130 110" fill="none" stroke="#121212" stroke-linecap="round" stroke-width="8"></path>
+<circle cx="130" cy="110" fill="#8D5524" r="6" stroke="#121212" stroke-width="2"></circle>
+</g>
+<!-- Head -->
+<g transform="translate(182, 85)">
+<!-- Angry face / head -->
+<circle cx="0" cy="0" fill="#8D5524" r="18" stroke="#121212" stroke-width="4"></circle>
+<!-- Cap / beret -->
+<path d="M -18 -6 C -18 -20 10 -22 22 -8 C 24 -2 18 2 12 0 Z" fill="#121212"></path>
+<polygon fill="#F5222D" points="12,-2 26,-4 22,4"></polygon>
+<!-- Eyes furious -->
+<ellipse cx="6" cy="-2" fill="#FFFFFF" rx="4" ry="4" stroke="#121212" stroke-width="2"></ellipse>
+<circle cx="8" cy="-2" fill="#121212" r="2"></circle>
+<!-- Gritted teeth mouth -->
+<rect fill="#FFFFFF" height="6" rx="2" stroke="#121212" stroke-width="2" width="12" x="2" y="7"></rect>
+<line stroke="#121212" stroke-width="1.5" x1="6" x2="6" y1="7" y2="13"></line>
+<line stroke="#121212" stroke-width="1.5" x1="10" x2="10" y1="7" y2="13"></line>
+</g>
+<!-- Arm 1 (front with weapon / chicotte stick) -->
+<g class="arm-b1">
+<path d="M 195 116 L 218 100 L 235 90" fill="none" stroke="#121212" stroke-linecap="round" stroke-width="9"></path>
+<circle cx="235" cy="90" fill="#8D5524" r="6" stroke="#121212" stroke-width="2"></circle>
+<!-- The whip / chicotte bending in speed -->
+<path class="chappie" d="M 235 90 Q 260 70 280 85" fill="none" stroke="#FFE600" stroke-linecap="round" stroke-width="5"></path>
+<path class="chappie" d="M 235 90 Q 260 70 280 85" fill="none" stroke="#121212" stroke-linecap="round" stroke-width="2"></path>
+</g>
+</g>
+<!-- ==================== RUNNER 1 (FLEEING / LE FUGITIF PANIKÉ) ==================== -->
+<g class="runner-front">
+<!-- Dust under feet -->
+<g class="dust2" transform="translate(360, 188)">
+<circle cx="0" cy="0" fill="#DCD9D7" r="10" stroke="#121212" stroke-width="2"></circle>
+<circle cx="-14" cy="-5" fill="#DCD9D7" r="7" stroke="#121212" stroke-width="2"></circle>
+<circle cx="-25" cy="1" fill="#DCD9D7" r="5" stroke="#121212" stroke-width="1.5"></circle>
+</g>
+<!-- Leg 2 (behind) -->
+<g class="leg-f2">
+<path d="M 390 148 L 415 172 L 440 188" fill="none" stroke="#121212" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"></path>
+<path d="M 390 148 L 415 172 L 440 188" fill="none" stroke="#2563EB" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"></path>
+<!-- Shoe with wing/speed -->
+<path d="M 440 188 L 458 188 C 462 190 460 196 454 196 L 434 196 Z" fill="#FFE600" stroke="#121212" stroke-width="2"></path>
+</g>
+<!-- Leg 1 (front) -->
+<g class="leg-f1">
+<path d="M 390 148 L 365 174 L 340 188" fill="none" stroke="#121212" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"></path>
+<path d="M 390 148 L 365 174 L 340 188" fill="none" stroke="#2563EB" stroke-linecap="round" stroke-linejoin="round" stroke-width="7"></path>
+<!-- Shoe -->
+<path d="M 340 188 L 324 188 C 320 188 322 194 328 196 L 348 196 Z" fill="#FFE600" stroke="#121212" stroke-width="2"></path>
+</g>
+<!-- Torso (leaning forward in pure panic) -->
+<path d="M 370 110 L 405 112 L 398 152 L 375 150 Z" fill="#00B050" stroke="#121212" stroke-linejoin="round" stroke-width="4"></path>
+<!-- Arm 2 (behind flailing) -->
+<g class="arm-f2">
+<path d="M 378 116 L 350 102 L 335 115" fill="none" stroke="#121212" stroke-linecap="round" stroke-width="8"></path>
+<circle cx="335" cy="115" fill="#C68642" r="6" stroke="#121212" stroke-width="2"></circle>
+<!-- Stolen bag or comic paper falling -->
+<rect fill="#FFE600" height="12" stroke="#121212" stroke-width="2" transform="rotate(18 323 114)" width="16" x="315" y="108"></rect>
+</g>
+<!-- Head & Expressions -->
+<g transform="translate(398, 82)">
+<!-- Head -->
+<circle cx="0" cy="0" fill="#C68642" r="19" stroke="#121212" stroke-width="4"></circle>
+<!-- Big panic eyes looking backwards -->
+<ellipse cx="-6" cy="-2" fill="#FFFFFF" rx="6" ry="7" stroke="#121212" stroke-width="2.5"></ellipse>
+<ellipse cx="6" cy="-2" fill="#FFFFFF" rx="6" ry="7" stroke="#121212" stroke-width="2.5"></ellipse>
+<!-- Pupils staring back in terror at pursuer -->
+<circle cx="-9" cy="-2" fill="#121212" r="2.5"></circle>
+<circle cx="3" cy="-2" fill="#121212" r="2.5"></circle>
+<!-- Wide open screaming mouth -->
+<ellipse cx="3" cy="9" fill="#990000" rx="7" ry="5" stroke="#121212" stroke-width="2"></ellipse>
+<path d="M -2 7 Q 3 10 8 7" fill="#FFFFFF"></path>
+<!-- Hair afro comic puffs -->
+<circle cx="-14" cy="-10" fill="#121212" r="6"></circle>
+<circle cx="-8" cy="-16" fill="#121212" r="7"></circle>
+<circle cx="2" cy="-18" fill="#121212" r="7"></circle>
+<circle cx="12" cy="-14" fill="#121212" r="6"></circle>
+<circle cx="17" cy="-7" fill="#121212" r="5"></circle>
+</g>
+<!-- Big comic sweat droplets bursting from head -->
+<g class="sweat" transform="translate(390, 65)">
+<path d="M 0 0 C -4 -4 -6 -10 0 -14 C 6 -10 4 -4 0 0 Z" fill="#00C0FF" stroke="#121212" stroke-width="2"></path>
+</g>
+<g class="sweat" transform="translate(425, 60)">
+<path d="M 0 0 C 4 -4 6 -10 0 -14 C -6 -10 -4 -4 0 0 Z" fill="#00C0FF" stroke="#121212" stroke-width="2"></path>
+</g>
+<!-- Arm 1 (front reaching out forward) -->
+<g class="arm-f1">
+<path d="M 400 116 L 428 108 L 448 95" fill="none" stroke="#121212" stroke-linecap="round" stroke-width="9"></path>
+<!-- Wide open hand reaching frantically -->
+<circle cx="448" cy="95" fill="#C68642" r="6" stroke="#121212" stroke-width="2"></circle>
+<line stroke="#121212" stroke-linecap="round" stroke-width="2.5" x1="450" x2="458" y1="92" y2="86"></line>
+<line stroke="#121212" stroke-linecap="round" stroke-width="2.5" x1="452" x2="461" y1="95" y2="93"></line>
+<line stroke="#121212" stroke-linecap="round" stroke-width="2.5" x1="450" x2="458" y1="98" y2="102"></line>
+</g>
+</g>
+<!-- Comic caption tag in corner -->
+<g transform="translate(18, 16)">
+<rect fill="#121212" height="24" rx="4" width="130" x="0" y="0"></rect>
+<text fill="#FFFFFF" font-family="'Impact', 'Arial Black', sans-serif" font-size="12" letter-spacing="1" text-anchor="middle" x="65" y="16">SAUVE QUI PEUT !</text>
+</g>
+</svg></div><!-- STITCH_SVG_END:ANIMATION_15 -->
+<div class="flex flex-col gap-1">
+<div class="inline-flex items-center gap-2 self-start bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded shadow-[2px_2px_0px_#1c1c1a]">
+<span class="material-symbols-outlined text-[16px]">local_police</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider">Alerte Brouteur Zéro</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile uppercase text-on-surface tracking-tight mt-1">
+        TE REVOILÀ, <span class="text-primary font-headline-lg-mobile">GAOU !</span> 👋
+      </h1>
+<p class="font-body-md text-body-md text-on-surface-variant font-medium">
+        « Connecte-toi vite avant que la chicotte ne t'attrape ! »
+      </p>
+</div>
+<form class="flex flex-col space-y-4 mt-2" onsubmit="event.preventDefault(); triggerPunchline();">
+<div class="flex flex-col gap-1.5">
+<label class="font-label-md text-label-md text-on-surface uppercase flex items-center justify-between" for="login-identifiant">
+<span>Identifiant / Email ou Téléphone</span>
+<span class="font-label-sm text-label-sm text-primary">Requis</span>
+</label>
+<div class="relative flex items-center bg-surface-container-lowest rounded-lg shadow-[3px_3px_0px_#1c1c1a] focus-within:shadow-[1px_1px_0px_#1c1c1a] focus-within:translate-x-0.5 focus-within:translate-y-0.5 transition-all">
+<div class="pl-3.5 pr-2 flex items-center pointer-events-none text-on-surface">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<input class="w-full py-3.5 pr-4 bg-transparent font-body-md text-body-md text-on-surface placeholder:text-secondary focus:outline-none" id="login-identifiant" placeholder="Ex: zokou@gbich.ci ou 0707..." required="" type="text"/>
+</div>
+</div>
+<div class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<label class="font-label-md text-label-md text-on-surface uppercase" for="login-password">
+            Mot de passe
+          </label>
+<a class="font-label-sm text-label-sm text-primary hover:underline flex items-center gap-0.5" href="#">
+<span>Tu as oublié ton code ?</span>
+</a>
+</div>
+<div class="relative flex items-center bg-surface-container-lowest rounded-lg shadow-[3px_3px_0px_#1c1c1a] focus-within:shadow-[1px_1px_0px_#1c1c1a] focus-within:translate-x-0.5 focus-within:translate-y-0.5 transition-all">
+<div class="pl-3.5 pr-2 flex items-center pointer-events-none text-on-surface">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<input class="w-full py-3.5 pr-12 bg-transparent font-body-md text-body-md text-on-surface placeholder:text-secondary focus:outline-none" id="login-password" placeholder="••••••••" required="" type="password"/>
+<button aria-label="Afficher le mot de passe" class="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-on-surface hover:text-primary transition-colors flex items-center justify-center" id="toggle-password" type="button">
+<span class="material-symbols-outlined text-[20px]" id="password-eye-icon">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<label class="flex items-center gap-2.5 cursor-pointer select-none group">
+<input checked="" class="w-5 h-5 rounded accent-primary cursor-pointer shadow-[2px_2px_0px_#1c1c1a] transition-transform active:scale-90" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface font-medium group-hover:text-primary transition-colors">
+            Se souvenir de moi sur ce djassa
+          </span>
+</label>
+</div>
+<button class="w-full mt-2 py-4 px-6 bg-primary text-on-primary font-headline-sm text-headline-sm uppercase tracking-wider rounded-xl shadow-[4px_4px_0px_#1c1c1a] hover:bg-tertiary active:shadow-none active:translate-x-1 active:translate-y-1 transition-all flex items-center justify-center gap-2 select-none" id="submit-cta" type="submit">
+<span>SE CONNECTER ET ENTRER</span>
+<span class="text-xl">🚀</span>
+</button>
+</form>
+<div class="relative flex items-center justify-center my-6">
+<div class="w-full h-0.5 bg-surface-variant"></div>
+<span class="absolute bg-surface-container-high px-3 py-1 rounded-full font-label-sm text-label-sm uppercase tracking-wider text-on-surface shadow-[2px_2px_0px_#1c1c1a]">
+        OU EN UN SEUL CLIC
+      </span>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 py-3 px-3 bg-surface-container-lowest text-on-surface rounded-lg shadow-[3px_3px_0px_#1c1c1a] hover:bg-surface-container-low active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all" onclick="simulateOAuth('Google')" type="button">
+<svg class="w-5 h-5 shrink-0" viewbox="0 0 24 24">
+<path d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.03h3.88c2.27-2.09 3.665-5.17 3.665-9.12z" fill="#4285F4"></path>
+<path d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.03c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.13C3.28 21.44 7.33 24 12 24z" fill="#34A853"></path>
+<path d="M5.28 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.57H1.25C.45 8.15 0 9.99 0 12s.45 3.85 1.25 5.43l4.03-3.14z" fill="#FBBC05"></path>
+<path d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.28 2.56 1.25 6.57l4.03 3.14c.95-2.83 3.6-4.96 6.72-4.96z" fill="#EA4335"></path>
+</svg>
+<span class="font-label-sm text-label-sm uppercase tracking-wide">Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-3 px-3 bg-surface-container-lowest text-on-surface rounded-lg shadow-[3px_3px_0px_#1c1c1a] hover:bg-surface-container-low active:shadow-none active:translate-x-0.5 active:translate-y-0.5 transition-all" onclick="simulateOAuth('Mobile Money')" type="button">
+<span class="material-symbols-outlined text-primary text-[20px]">phone_android</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wide">Orange/MTN</span>
+</button>
+</div>
+<div class="mt-8 pt-4 flex flex-col items-center text-center space-y-3">
+<div class="bg-surface-container p-3 rounded-xl shadow-[3px_3px_0px_#1c1c1a] w-full">
+<p class="font-body-md text-body-md text-on-surface">
+          Pas encore membre de la bande ?
+        </p>
+<a class="inline-block mt-1 font-label-md text-label-md text-primary uppercase underline font-bold tracking-wide hover:text-tertiary transition-colors" href="#">
+          CRÉER UN COMPTE ICI (C'EST GRATUIT !)
+        </a>
+</div>
+<div class="inline-flex items-center gap-1.5 text-on-surface-variant font-label-sm text-label-sm uppercase tracking-widest pt-2">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+<span>Humour 100% ivoirien certifié</span>
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+</div>
+</div>
+</div>
+</div>
+<script>
+  (function initLoginPage() {
+    const pwdInput = document.getElementById('login-password');
+    const toggleBtn = document.getElementById('toggle-password');
+    const eyeIcon = document.getElementById('password-eye-icon');
+
+    if (toggleBtn && pwdInput && eyeIcon) {
+      toggleBtn.addEventListener('click', () => {
+        const isPassword = pwdInput.type === 'password';
+        pwdInput.type = isPassword ? 'text' : 'password';
+        eyeIcon.textContent = isPassword ? 'visibility_off' : 'visibility';
+      });
+    }
+
+    window.simulateOAuth = function(provider) {
+      alert(`Connexion avec ${provider} en cours... Ya pas drap !`);
+    };
+
+    window.triggerPunchline = function() {
+      const btn = document.getElementById('submit-cta');
+      if (!btn) return;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span>VERIFICATION DU GAOU...</span> <span>⏳</span>`;
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.innerHTML = `<span>BIENVENUE DANS LE DJASSA !</span> <span>🎉</span>`;
+        btn.classList.replace('bg-primary', 'bg-on-surface');
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.replace('bg-on-surface', 'bg-primary');
+          btn.disabled = false;
+        }, 1600);
+      }, 900);
+    };
+  })();
+</script></main></body></html>

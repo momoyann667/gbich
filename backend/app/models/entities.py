@@ -26,10 +26,16 @@ class User(Base, TimestampMixin):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
+    email: Mapped[Optional[str]] = mapped_column(
+        String(255), unique=True, nullable=True
+    )
     phone_number: Mapped[Optional[str]] = mapped_column(
         String(20), unique=True, nullable=True
     )
     username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    password_hash: Mapped[Optional[str]] = mapped_column(
+        String(255), nullable=True
+    )
     avatar_slug: Mapped[str] = mapped_column(
         String(50), default="avatar_default", nullable=False
     )

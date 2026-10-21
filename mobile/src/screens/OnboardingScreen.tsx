@@ -293,6 +293,14 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
     }
   };
 
+  const handleGoToLogin = () => {
+    if (navigation?.navigate) {
+      (navigation as any).navigate('Login');
+    } else {
+      handleFinish();
+    }
+  };
+
   return (
     <ComicHalftoneBackground>
       <ScrollView
@@ -872,7 +880,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
             {/* Bouton secondaire : Créer un compte ou entrer en invité */}
             <TouchableOpacity
               activeOpacity={0.85}
-              onPress={handleFinish}
+              onPress={handleGoToLogin}
               style={[
                 styles.guestBtn,
                 Platform.OS === 'web' && ({ cursor: 'pointer' } as any),

@@ -6,12 +6,15 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { Platform } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 
-// In browser / PWA context, relative URL "/api/v1" automatically uses the reverse proxy!
+// In browser / PWA context, use backend URL or reverse proxy
 const getDefaultBaseUrl = (): string => {
   if (process.env.EXPO_PUBLIC_API_URL) {
     return process.env.EXPO_PUBLIC_API_URL;
   }
   if (Platform.OS === 'web' && typeof window !== 'undefined') {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:8000/api/v1';
+    }
     return '/api/v1';
   }
   return 'http://localhost:8000/api/v1';

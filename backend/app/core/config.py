@@ -31,7 +31,9 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: Union[str, List[str]] = [
         "http://localhost:8081",
         "http://localhost:3000",
+        "http://localhost:3008",
         "http://127.0.0.1:8081",
+        "http://127.0.0.1:3008",
         "http://localhost:80",
         "http://127.0.0.1:80",
     ]
