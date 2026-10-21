@@ -78,7 +78,6 @@ const SVG_ANIMATED_CONTENT = `
 </defs>
 <!-- Fond trame de BD -->
 <rect fill="#FCF9F6" height="240" rx="16" width="600"></rect>
-<rect fill="none" height="240" rx="16" stroke="#121212" stroke-width="4" width="600"></rect>
 <!-- Ben-day dots trame discrète -->
 <g opacity="0.07">
   <circle cx="30" cy="30" fill="#121212" r="3"></circle>
@@ -270,17 +269,17 @@ export const AnimatedChaseScene: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 180,
+    height: 210,
     backgroundColor: '#FCF9F6',
     borderRadius: 16,
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: '#171416',
     overflow: 'hidden',
     shadowColor: '#171416',
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 4,
   },
   nativeFallback: {
     flex: 1,

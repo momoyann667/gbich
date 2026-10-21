@@ -1,6 +1,7 @@
 /**
  * GBICH'APP — Écran de Connexion Satirique (Login Screen).
- * Style Comic Brutalism selon documentation (connexion.png & code_connexion.html).
+ * Interface épurée et moderne : blocs simples sans petits carrés d'angle,
+ * occupation intégrale de la hauteur de page sans vide en bas.
  */
 
 import React, { useState } from 'react';
@@ -69,11 +70,10 @@ export const LoginScreen: React.FC = () => {
         setSuccessMessage('BIENVENUE DANS LE DJASSA ! 🎉');
         setSession(data.access_token, data.user);
 
-        // Petit délai visuel pour apprécier la punchline avant navigation
         setTimeout(() => {
           setIsLoading(false);
           navigation.navigate('MainTabs');
-        }, 900);
+        }, 800);
       } else {
         throw new Error('Réponse serveur inattendue');
       }
@@ -83,7 +83,7 @@ export const LoginScreen: React.FC = () => {
         setErrorMessage(err.response.data.detail);
       } else if (err.message === 'Network Error' || !err.response) {
         setErrorMessage(
-          "Impossible de joindre le serveur GBICH!. Vérifie ta connexion ou le backend !"
+          "Impossible de joindre le serveur GBICH!. Vérifie que le backend tourne sur le port 8000 !"
         );
       } else {
         setErrorMessage("Alerte dérapage ! Une erreur est survenue lors de la connexion.");
@@ -111,230 +111,277 @@ export const LoginScreen: React.FC = () => {
           bounces={false}
         >
           <View style={styles.contentWrapper}>
-            {/* ========================================================= */}
-            {/* 1. EN-TÊTE FIXE / NAVIGATION                             */}
-            {/* ========================================================= */}
-            <View style={styles.topHeader}>
-              <View style={styles.headerLeft}>
-                <TouchableOpacity
-                  activeOpacity={0.75}
-                  onPress={handleBack}
-                  style={[
-                    styles.backBtn,
-                    Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-                  ]}
-                  accessibilityLabel="Retour"
-                >
-                  <Text style={styles.backBtnArrow}>←</Text>
-                </TouchableOpacity>
-
-                <Image
-                  source={require('../../assets/logo.png')}
-                  style={styles.headerLogo as any}
-                  resizeMode="contain"
-                />
-              </View>
-
-              <View style={styles.headerRight}>
-                <Text style={styles.headerLoginText}>LOGIN</Text>
-                <View style={styles.headerAvatarBadge}>
-                  <Text style={styles.headerAvatarIcon}>👤</Text>
-                </View>
-              </View>
-            </View>
-
-            {/* ========================================================= */}
-            {/* 2. ANIMATION 2D COURSE-POURSUITE BURLESQUE (SVG)         */}
-            {/* ========================================================= */}
-            <View style={styles.animationSection}>
-              <AnimatedChaseScene />
-            </View>
-
-            {/* ========================================================= */}
-            {/* 3. ACCROCHE SATIRIQUE & TITRE NÉO-BRUTALISTE              */}
-            {/* ========================================================= */}
-            <View style={styles.headlineSection}>
-              {/* Badge Alerte Brouteur Zéro */}
-              <View style={styles.brouteurBadge}>
-                <Text style={styles.brouteurIcon}>🛡️</Text>
-                <Text style={styles.brouteurText}>ALERTE BROUTEUR ZÉRO</Text>
-              </View>
-
-              {/* Titre percutant en Anton */}
-              <Text style={styles.mainTitle}>
-                <Text style={styles.titleBlack}>TE REVOILÀ, </Text>
-                <Text style={styles.titleRed}>GAOU !</Text>
-                <Text> 👋</Text>
-              </Text>
-
-              {/* Sous-titre satirique d'ambiance */}
-              <Text style={styles.subtitleText}>
-                « Connecte-toi vite avant que la chicotte ne t'attrape ! »
-              </Text>
-            </View>
-
-            {/* Message d'erreur (si présent) */}
-            {errorMessage ? (
-              <View style={styles.errorBanner}>
-                <Text style={styles.errorIcon}>⚠️</Text>
-                <Text style={styles.errorText}>{errorMessage}</Text>
-              </View>
-            ) : null}
-
-            {/* Message de succès (si connexion réussie) */}
-            {successMessage ? (
-              <View style={styles.successBanner}>
-                <Text style={styles.successIcon}>🎉</Text>
-                <Text style={styles.successText}>{successMessage}</Text>
-              </View>
-            ) : null}
-
-            {/* ========================================================= */}
-            {/* 4. FORMULAIRE ERGONOMIQUE                                 */}
-            {/* ========================================================= */}
-            <View style={styles.formContainer}>
-              {/* Champ 1 : Identifiant */}
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Text style={styles.fieldLabel}>
-                    IDENTIFIANT / EMAIL OU TÉLÉPHONE
-                  </Text>
-                  <Text style={styles.requiredTag}>REQUIS</Text>
-                </View>
-
-                <View
-                  style={[
-                    styles.inputWrapper,
-                    Platform.OS === 'web' && (webStyles.inputShadow as any),
-                  ]}
-                >
-                  <Text style={styles.inputLeftIcon}>👤</Text>
-                  <TextInput
+            {/* Section Supérieure : En-tête, Animation & Titre */}
+            <View style={styles.topSection}>
+              {/* ========================================================= */}
+              {/* 1. EN-TÊTE ÉPURÉ (Pas de bordure/carrés d'angle)           */}
+              {/* ========================================================= */}
+              <View style={styles.topHeader}>
+                <View style={styles.headerLeft}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={handleBack}
                     style={[
-                      styles.textInputField,
-                      Platform.OS === 'web' && ({ outline: 'none' } as any),
+                      styles.backBtn,
+                      Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
                     ]}
-                    value={identifier}
-                    onChangeText={setIdentifier}
-                    placeholder="Ex: zokou@gbich.ci ou 0707..."
-                    placeholderTextColor="#8C888A"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    keyboardType="email-address"
-                    editable={!isLoading}
+                    accessibilityLabel="Retour"
+                  >
+                    <Text style={styles.backBtnArrow}>←</Text>
+                  </TouchableOpacity>
+
+                  <Image
+                    source={require('../../assets/logo.png')}
+                    style={styles.headerLogo as any}
+                    resizeMode="contain"
                   />
                 </View>
+
+                <View style={styles.headerRight}>
+                  <Text style={styles.headerLoginText}>LOGIN</Text>
+                  <View style={styles.headerAvatarBadge}>
+                    <Text style={styles.headerAvatarIcon}>👤</Text>
+                  </View>
+                </View>
               </View>
 
-              {/* Champ 2 : Mot de passe */}
-              <View style={styles.inputGroup}>
-                <View style={styles.labelRow}>
-                  <Text style={styles.fieldLabel}>MOT DE PASSE</Text>
+              {/* ========================================================= */}
+              {/* 2. ANIMATION 2D COURSE-POURSUITE BURLESQUE (SVG)         */}
+              {/* ========================================================= */}
+              <View style={styles.animationSection}>
+                <AnimatedChaseScene />
+              </View>
+
+              {/* ========================================================= */}
+              {/* 3. ACCROCHE SATIRIQUE & TITRE                            */}
+              {/* ========================================================= */}
+              <View style={styles.headlineSection}>
+                {/* Badge Alerte Brouteur Zéro simple */}
+                <View style={styles.brouteurBadge}>
+                  <Text style={styles.brouteurIcon}>🛡️</Text>
+                  <Text style={styles.brouteurText}>ALERTE BROUTEUR ZÉRO</Text>
+                </View>
+
+                {/* Titre percutant en Anton */}
+                <Text style={styles.mainTitle}>
+                  <Text style={styles.titleBlack}>TE REVOILÀ, </Text>
+                  <Text style={styles.titleRed}>GAOU !</Text>
+                  <Text> 👋</Text>
+                </Text>
+
+                {/* Sous-titre satirique d'ambiance */}
+                <Text style={styles.subtitleText}>
+                  « Connecte-toi vite avant que la chicotte ne t'attrape ! »
+                </Text>
+              </View>
+
+              {/* Bannières simples sans décalage d'angle */}
+              {errorMessage ? (
+                <View style={styles.errorBanner}>
+                  <Text style={styles.errorIcon}>⚠️</Text>
+                  <Text style={styles.errorText}>{errorMessage}</Text>
+                </View>
+              ) : null}
+
+              {successMessage ? (
+                <View style={styles.successBanner}>
+                  <Text style={styles.successIcon}>🎉</Text>
+                  <Text style={styles.successText}>{successMessage}</Text>
+                </View>
+              ) : null}
+            </View>
+
+            {/* Section Inférieure : Formulaire, Bouton & Footer (Plein écran) */}
+            <View style={styles.bottomSection}>
+              {/* ========================================================= */}
+              {/* 4. FORMULAIRE ERGONOMIQUE (Champs simples et propres)     */}
+              {/* ========================================================= */}
+              <View style={styles.formContainer}>
+                {/* Champ 1 : Identifiant */}
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelRow}>
+                    <Text style={styles.fieldLabel}>
+                      IDENTIFIANT / EMAIL OU TÉLÉPHONE
+                    </Text>
+                    <Text style={styles.requiredTag}>REQUIS</Text>
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Text style={styles.inputLeftIcon}>👤</Text>
+                    <TextInput
+                      style={[
+                        styles.textInputField,
+                        Platform.OS === 'web' && ({ outline: 'none' } as any),
+                      ]}
+                      value={identifier}
+                      onChangeText={setIdentifier}
+                      placeholder="Ex: zokou@gbich.ci ou 0707..."
+                      placeholderTextColor="#8C888A"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      keyboardType="email-address"
+                      editable={!isLoading}
+                    />
+                  </View>
+                </View>
+
+                {/* Champ 2 : Mot de passe */}
+                <View style={styles.inputGroup}>
+                  <View style={styles.labelRow}>
+                    <Text style={styles.fieldLabel}>MOT DE PASSE</Text>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => {
+                        alert("Ya pas drap ! Rapproche-toi du djassa ou contacte le rédacteur en chef.");
+                      }}
+                    >
+                      <Text style={styles.forgotPasswordLink}>
+                        Tu as oublié ton code ?
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.inputWrapper}>
+                    <Text style={styles.inputLeftIcon}>🔒</Text>
+                    <TextInput
+                      style={[
+                        styles.textInputField,
+                        Platform.OS === 'web' && ({ outline: 'none' } as any),
+                      ]}
+                      value={password}
+                      onChangeText={setPassword}
+                      placeholder="••••••••"
+                      placeholderTextColor="#8C888A"
+                      secureTextEntry={!showPassword}
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      editable={!isLoading}
+                    />
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => setShowPassword(!showPassword)}
+                      style={styles.eyeBtn}
+                      accessibilityLabel="Afficher ou masquer le mot de passe"
+                    >
+                      <Text style={styles.eyeBtnIcon}>
+                        {showPassword ? '🙈' : '👁️'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+
+                {/* Case à cocher simple */}
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  onPress={() => setRememberMe(!rememberMe)}
+                  style={styles.rememberRow}
+                >
+                  <View
+                    style={[
+                      styles.checkboxBox,
+                      rememberMe && styles.checkboxActive,
+                    ]}
+                  >
+                    {rememberMe ? <Text style={styles.checkboxCheck}>✓</Text> : null}
+                  </View>
+                  <Text style={styles.rememberText}>
+                    Se souvenir de moi sur ce djassa
+                  </Text>
+                </TouchableOpacity>
+
+                {/* ========================================================= */}
+                {/* 5. BOUTON D'ACTION PRINCIPAL ÉPURÉ                        */}
+                {/* ========================================================= */}
+                <TouchableOpacity
+                  activeOpacity={0.88}
+                  onPress={handleLogin}
+                  disabled={isLoading}
+                  style={[
+                    styles.submitBtn,
+                    isLoading && styles.submitBtnDisabled,
+                    Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                  ]}
+                >
+                  {isLoading ? (
+                    <View style={styles.loadingRow}>
+                      <ActivityIndicator color="#FFFFFF" size="small" />
+                      <Text style={styles.submitBtnText}>
+                        VÉRIFICATION DU GAOU... ⏳
+                      </Text>
+                    </View>
+                  ) : (
+                    <View style={styles.btnContentRow}>
+                      <Text style={styles.submitBtnText}>
+                        SE CONNECTER ET ENTRER
+                      </Text>
+                      <Text style={styles.rocketEmoji}>🚀</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+
+                {/* Séparateur simple */}
+                <View style={styles.dividerRow}>
+                  <View style={styles.dividerLine} />
+                  <View style={styles.dividerBadge}>
+                    <Text style={styles.dividerText}>OU EN UN SEUL CLIC</Text>
+                  </View>
+                </View>
+
+                {/* Boutons de connexion rapide simples */}
+                <View style={styles.oauthRow}>
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => alert("Connexion avec Google en cours... Ya pas drap !")}
+                    style={[
+                      styles.oauthBtn,
+                      Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                    ]}
+                  >
+                    <Text style={styles.oauthIcon}>🌐</Text>
+                    <Text style={styles.oauthText}>GOOGLE</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    onPress={() => alert("Connexion Orange / MTN Money en cours... Ya pas drap !")}
+                    style={[
+                      styles.oauthBtn,
+                      Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                    ]}
+                  >
+                    <Text style={styles.oauthIcon}>📱</Text>
+                    <Text style={styles.oauthText}>ORANGE / MTN</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Encart Création de Compte */}
+                <View style={styles.registerCard}>
+                  <Text style={styles.registerCardPrompt}>
+                    Pas encore membre de la bande ?
+                  </Text>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => {
-                      alert("Ya pas drap ! Rapproche-toi du djassa ou contacte le rédacteur en chef.");
+                      alert("Ya pas drap ! Remplis tes coordonnées pour intégrer le djassa GBICH!.");
                     }}
                   >
-                    <Text style={styles.forgotPasswordLink}>
-                      Tu as oublié ton code ?
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-
-                <View
-                  style={[
-                    styles.inputWrapper,
-                    Platform.OS === 'web' && (webStyles.inputShadow as any),
-                  ]}
-                >
-                  <Text style={styles.inputLeftIcon}>🔒</Text>
-                  <TextInput
-                    style={[
-                      styles.textInputField,
-                      Platform.OS === 'web' && ({ outline: 'none' } as any),
-                    ]}
-                    value={password}
-                    onChangeText={setPassword}
-                    placeholder="••••••••"
-                    placeholderTextColor="#8C888A"
-                    secureTextEntry={!showPassword}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    editable={!isLoading}
-                  />
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => setShowPassword(!showPassword)}
-                    style={styles.eyeBtn}
-                    accessibilityLabel="Afficher ou masquer le mot de passe"
-                  >
-                    <Text style={styles.eyeBtnIcon}>
-                      {showPassword ? '🙈' : '👁️'}
+                    <Text style={styles.registerCardLink}>
+                      CRÉER UN COMPTE ICI (C'EST GRATUIT !)
                     </Text>
                   </TouchableOpacity>
                 </View>
               </View>
 
-              {/* Case à cocher : Se souvenir de moi */}
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={() => setRememberMe(!rememberMe)}
-                style={styles.rememberRow}
-              >
-                <View
-                  style={[
-                    styles.checkboxBox,
-                    rememberMe && styles.checkboxActive,
-                  ]}
-                >
-                  {rememberMe ? <Text style={styles.checkboxCheck}>✓</Text> : null}
-                </View>
-                <Text style={styles.rememberText}>
-                  Se souvenir de moi sur ce djassa
+              {/* ========================================================= */}
+              {/* 6. PIED DE PAGE                                           */}
+              {/* ========================================================= */}
+              <View style={styles.footerSection}>
+                <View style={styles.footerDot} />
+                <Text style={styles.footerText}>
+                  HUMOUR 100% IVOIRIEN CERTIFIÉ
                 </Text>
-              </TouchableOpacity>
-
-              {/* ========================================================= */}
-              {/* 5. BOUTON D'ACTION PRINCIPAL                              */}
-              {/* ========================================================= */}
-              <TouchableOpacity
-                activeOpacity={0.88}
-                onPress={handleLogin}
-                disabled={isLoading}
-                style={[
-                  styles.submitBtn,
-                  isLoading && styles.submitBtnDisabled,
-                  Platform.OS === 'web' && (webStyles.btnTactile as any),
-                ]}
-              >
-                {isLoading ? (
-                  <View style={styles.loadingRow}>
-                    <ActivityIndicator color="#FFFFFF" size="small" />
-                    <Text style={styles.submitBtnText}>
-                      VÉRIFICATION DU GAOU... ⏳
-                    </Text>
-                  </View>
-                ) : (
-                  <View style={styles.btnContentRow}>
-                    <Text style={styles.submitBtnText}>
-                      SE CONNECTER ET ENTRER
-                    </Text>
-                    <Text style={styles.rocketEmoji}>🚀</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            </View>
-
-            {/* ========================================================= */}
-            {/* 6. PIED DE PAGE & AMBIANCE                                */}
-            {/* ========================================================= */}
-            <View style={styles.footerSection}>
-              <View style={styles.footerDot} />
-              <Text style={styles.footerText}>
-                HUMOUR 100% IVOIRIEN CERTIFIÉ
-              </Text>
-              <View style={styles.footerDot} />
+                <View style={styles.footerDot} />
+              </View>
             </View>
           </View>
         </ScrollView>
@@ -350,18 +397,31 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
+    minHeight: '100%',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingTop: Platform.OS === 'web' ? 12 : 24,
-    paddingBottom: Platform.OS === 'web' ? 32 : 40,
+    paddingBottom: Platform.OS === 'web' ? 20 : 32,
+    justifyContent: 'space-between',
   },
   contentWrapper: {
     width: '100%',
-    maxWidth: 440,
-    gap: 16,
+    maxWidth: 480,
+    flex: 1,
+    justifyContent: 'space-between',
+    gap: 14,
+  },
+  topSection: {
+    width: '100%',
+    gap: 12,
+  },
+  bottomSection: {
+    width: '100%',
+    gap: 12,
+    marginTop: 4,
   },
 
-  // 1. En-tête
+  // 1. En-tête épuré sans bordure ni carrés d'angle
   topHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -372,32 +432,25 @@ const styles = StyleSheet.create({
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
   },
   backBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 10,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#171416',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#171416',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
   },
   backBtnArrow: {
-    fontSize: 20,
-    fontWeight: '900',
+    fontSize: 24,
+    fontWeight: '700',
     color: '#171416',
     marginTop: -2,
   },
   headerLogo: {
-    width: 108,
-    height: 36,
+    width: 110,
+    height: 38,
   },
   headerRight: {
     flexDirection: 'row',
@@ -411,18 +464,16 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   headerAvatarBadge: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: '#F5222D',
-    borderWidth: 2,
-    borderColor: '#171416',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#171416',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 0,
+    shadowColor: '#F5222D',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
     elevation: 3,
   },
   headerAvatarIcon: {
@@ -443,17 +494,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'flex-start',
     backgroundColor: '#EBE8E5',
-    borderWidth: 1.8,
-    borderColor: '#171416',
-    borderRadius: 6,
-    paddingVertical: 3,
-    paddingHorizontal: 8,
+    borderRadius: 8,
+    paddingVertical: 4,
+    paddingHorizontal: 10,
     gap: 6,
-    shadowColor: '#171416',
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
   },
   brouteurIcon: {
     fontSize: 13,
@@ -467,11 +511,11 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: Platform.OS === 'web' ? 28 : 25,
-    lineHeight: Platform.OS === 'web' ? 34 : 31,
+    fontSize: Platform.OS === 'web' ? 29 : 26,
+    lineHeight: Platform.OS === 'web' ? 35 : 32,
     letterSpacing: 0.8,
     textTransform: 'uppercase',
-    marginTop: 4,
+    marginTop: 2,
   },
   titleBlack: {
     color: '#171416',
@@ -487,22 +531,17 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
 
-  // Bannières d'alerte
+  // Bannières simples
   errorBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFF1F0',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: '#F5222D',
     borderRadius: 10,
-    paddingVertical: 8,
+    paddingVertical: 9,
     paddingHorizontal: 12,
     gap: 8,
-    shadowColor: '#171416',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
   },
   errorIcon: {
     fontSize: 16,
@@ -519,17 +558,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F6FFED',
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: '#52C41A',
     borderRadius: 10,
-    paddingVertical: 8,
+    paddingVertical: 9,
     paddingHorizontal: 12,
     gap: 8,
-    shadowColor: '#171416',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
   },
   successIcon: {
     fontSize: 16,
@@ -542,9 +576,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 
-  // 4. Formulaire
+  // 4. Formulaire avec champs simples et propres
   formContainer: {
-    gap: 14,
+    gap: 13,
     width: '100%',
   },
   inputGroup: {
@@ -580,16 +614,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderWidth: 2.2,
-    borderColor: '#171416',
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    height: 48,
+    borderWidth: 1.5,
+    borderColor: '#D4D0CC',
+    borderRadius: 12,
+    paddingHorizontal: 14,
+    height: 50,
     shadowColor: '#171416',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
   inputLeftIcon: {
     fontSize: 16,
@@ -611,7 +645,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // Checkbox
+  // Checkbox simple
   rememberRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -619,26 +653,22 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   checkboxBox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 2,
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1.8,
     borderColor: '#171416',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#171416',
-    shadowOffset: { width: 1.5, height: 1.5 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 1,
   },
   checkboxActive: {
     backgroundColor: '#F5222D',
+    borderColor: '#F5222D',
   },
   checkboxCheck: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '900',
     marginTop: -2,
   },
@@ -649,21 +679,19 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 
-  // 5. Bouton principal
+  // 5. Bouton principal propre et percutant
   submitBtn: {
     width: '100%',
     backgroundColor: '#F5222D',
-    borderWidth: 3,
-    borderColor: '#171416',
     borderRadius: 14,
-    paddingVertical: 14,
+    paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#171416',
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 5,
+    shadowColor: '#F5222D',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    elevation: 4,
     marginTop: 4,
   },
   submitBtnDisabled: {
@@ -683,12 +711,102 @@ const styles = StyleSheet.create({
   },
   submitBtnText: {
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
-    fontSize: 16,
+    fontSize: 16.5,
     color: '#FFFFFF',
     letterSpacing: 1,
   },
   rocketEmoji: {
     fontSize: 18,
+  },
+
+  // Séparateur simple
+  dividerRow: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 4,
+  },
+  dividerLine: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    height: 1,
+    backgroundColor: '#E5E2DF',
+  },
+  dividerBadge: {
+    backgroundColor: '#EBE8E5',
+    paddingVertical: 3,
+    paddingHorizontal: 12,
+    borderRadius: 9999,
+  },
+  dividerText: {
+    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
+    fontSize: 10,
+    fontWeight: '800',
+    color: '#625D5F',
+    letterSpacing: 0.8,
+  },
+
+  // OAuth Row simple
+  oauthRow: {
+    flexDirection: 'row',
+    gap: 10,
+    width: '100%',
+  },
+  oauthBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1.5,
+    borderColor: '#D4D0CC',
+    borderRadius: 12,
+    paddingVertical: 11,
+    gap: 8,
+    shadowColor: '#171416',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  oauthIcon: {
+    fontSize: 16,
+  },
+  oauthText: {
+    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#171416',
+    letterSpacing: 0.5,
+  },
+
+  // Carte Inscription
+  registerCard: {
+    backgroundColor: '#F0EDEA',
+    borderWidth: 1.5,
+    borderColor: '#E5E2DF',
+    borderRadius: 12,
+    paddingVertical: 11,
+    paddingHorizontal: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    marginTop: 2,
+  },
+  registerCardPrompt: {
+    fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',
+    fontSize: 12.5,
+    color: '#625D5F',
+    fontWeight: '500',
+  },
+  registerCardLink: {
+    fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
+    fontSize: 12.5,
+    fontWeight: '800',
+    color: '#F5222D',
+    letterSpacing: 0.4,
+    textDecorationLine: 'underline',
   },
 
   // 6. Pied de page
@@ -697,8 +815,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    paddingTop: 12,
-    paddingBottom: 8,
+    paddingTop: 8,
+    paddingBottom: 4,
   },
   footerDot: {
     width: 6,
@@ -708,19 +826,9 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontFamily: Platform.OS === 'web' ? "'Space Grotesk', sans-serif" : 'System',
-    fontSize: 10.5,
+    fontSize: 11,
     fontWeight: '800',
     color: '#625D5F',
     letterSpacing: 0.8,
   },
 });
-
-const webStyles = {
-  inputShadow: {
-    boxShadow: '3px 3px 0px #171416',
-  },
-  btnTactile: {
-    boxShadow: '4px 4px 0px #171416',
-    cursor: 'pointer',
-  },
-};
