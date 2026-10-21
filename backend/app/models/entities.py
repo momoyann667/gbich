@@ -48,6 +48,12 @@ class User(Base, TimestampMixin):
     is_active: Mapped[bool] = mapped_column(
         Boolean, default=True, nullable=False
     )
+    country_code: Mapped[Optional[str]] = mapped_column(
+        String(10), default="+225", nullable=True
+    )
+    interests: Mapped[Any] = mapped_column(
+        JSONB, default=list, nullable=True
+    )
 
 
 class Category(Base):

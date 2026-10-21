@@ -28,6 +28,17 @@ async def lifespan(app: FastAPI):
     # 2. Initialize Redis connection
     await init_redis()
 
+    # 3. Initialize PostgreSQL database tables
+    try:
+        from app.core.database import engine
+        from app.models.base import Base
+        import app.models.entities  # noqa: F401
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+        logger.info("Database tables initialized successfully in PostgreSQL.")
+    except Exception as exc:
+        logger.warning(f"Could not initialize DB tables at startup: {exc}")
+
     yield
 
     # 3. Teardown

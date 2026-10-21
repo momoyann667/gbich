@@ -52,12 +52,42 @@ class Settings(BaseSettings):
         return v
 
     # PostgreSQL 16
-    POSTGRES_SERVER: str = "localhost"
+    POSTGRES_SERVER: str = "127.0.0.1"
     POSTGRES_PORT: int = 5432
     POSTGRES_USER: str = "gbich_user"
     POSTGRES_PASSWORD: str = "gbich_dev_password"
     POSTGRES_DB: str = "gbich_db"
     POSTGRES_ECHO_SQL: bool = False
+
+    @field_validator("POSTGRES_SERVER", mode="after")
+    @classmethod
+    def resolve_postgres_host(cls, v: str) -> str:
+        if v in ("postgres", "localhost"):
+            import socket
+            try:
+                socket.gethostbyname(v)
+                return v
+            except Exception:
+                return "127.0.0.1"
+        return v
+
+    # Redis 7.2
+    REDIS_HOST: str = "127.0.0.1"
+    REDIS_PORT: int = 6379
+    REDIS_PASSWORD: str = ""
+    REDIS_DB: int = 0
+
+    @field_validator("REDIS_HOST", mode="after")
+    @classmethod
+    def resolve_redis_host(cls, v: str) -> str:
+        if v in ("redis", "localhost"):
+            import socket
+            try:
+                socket.gethostbyname(v)
+                return v
+            except Exception:
+                return "127.0.0.1"
+        return v
 
     @property
     def ASYNC_DATABASE_URL(self) -> str:

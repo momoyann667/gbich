@@ -194,19 +194,26 @@ async def register(
 
     # 1. Tentative d'insertion en base PostgreSQL
     try:
-        query = select(User).where(
-            or_(
-                User.username == clean_username,
-                User.email == email_val if email_val else False,
-                User.phone_number == phone_val if phone_val else False,
-            )
-        )
+        # Vérification d'unicité dans PostgreSQL
+        existing_filters = [User.username.ilike(clean_username)]
+        if email_val:
+            existing_filters.append(User.email.ilike(email_val))
+        if phone_val:
+            existing_filters.append(User.phone_number == phone_val)
+
+        query = select(User).where(or_(*existing_filters))
         result = await db.execute(query)
         existing = result.scalar_one_or_none()
         if existing:
+            if existing.username.lower() == clean_username.lower():
+                detail = "Ce blaze de vanneur est déjà réservé ! Trouve un autre blaze plus chicot !"
+            elif email_val and existing.email and existing.email.lower() == email_val.lower():
+                detail = "Cet email est déjà associé à un compte. Connecte-toi directement !"
+            else:
+                detail = "Ce numéro de téléphone est déjà enregistré dans le djassa !"
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Ce blaze, email ou numéro est déjà pris dans le djassa ! Choisis-en un autre !",
+                detail=detail,
             )
 
         new_user = User(
@@ -219,6 +226,8 @@ async def register(
             avatar_slug="avatar_zokou",
             preferred_lang="fr",
             is_active=True,
+            country_code=register_data.country_code or "+225",
+            interests=register_data.interests or [],
         )
         db.add(new_user)
         await db.commit()
