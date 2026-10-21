@@ -9,6 +9,7 @@ from sqlalchemy import (
     Text,
     Boolean,
     Integer,
+    Float,
     ForeignKey,
     Date,
     DateTime,
@@ -53,6 +54,15 @@ class User(Base, TimestampMixin):
     )
     interests: Mapped[Any] = mapped_column(
         JSONB, default=list, nullable=True
+    )
+    last_latitude: Mapped[Optional[float]] = mapped_column(
+        Float, nullable=True
+    )
+    last_longitude: Mapped[Optional[float]] = mapped_column(
+        Float, nullable=True
+    )
+    last_location_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True), nullable=True
     )
 
 
@@ -163,3 +173,28 @@ class UserGameScore(Base):
             "user_id", "game_session_id", name="unique_user_game_session"
         ),
     )
+
+
+class UserLocation(Base, TimestampMixin):
+    """Enregistrement de la géolocalisation pour la cartographie du tableau de bord."""
+    __tablename__ = "user_locations"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    latitude: Mapped[float] = mapped_column(Float, nullable=False)
+    longitude: Mapped[float] = mapped_column(Float, nullable=False)
+    accuracy: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    device_type: Mapped[Optional[str]] = mapped_column(String(50), default="mobile_pwa", nullable=True)
+    city: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    country: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    ip_address: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+
+    __table_args__ = (
+        Index("idx_user_locations_coords", "latitude", "longitude"),
+        Index("idx_user_locations_created", "created_at"),
+    )
+

@@ -6,6 +6,21 @@ import { queryClient } from './src/api/queryClient';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { ResponsiveContainer } from './src/components/common/ResponsiveContainer';
 import { registerServiceWorker } from './src/utils/registerServiceWorker';
+import { PwaInstallPrompt } from './src/components/common/PwaInstallPrompt';
+import { useGeolocationTracker } from './src/hooks/useGeolocationTracker';
+
+function MainAppContent() {
+  // Déclenche la demande de position dès l'ouverture de l'application (pour la carte du dashboard)
+  useGeolocationTracker();
+
+  return (
+    <ResponsiveContainer>
+      <RootNavigator />
+      <PwaInstallPrompt />
+      <StatusBar style="light" />
+    </ResponsiveContainer>
+  );
+}
 
 export default function App() {
   useEffect(() => {
@@ -16,10 +31,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <ResponsiveContainer>
-          <RootNavigator />
-          <StatusBar style="light" />
-        </ResponsiveContainer>
+        <MainAppContent />
       </QueryClientProvider>
     </SafeAreaProvider>
   );
