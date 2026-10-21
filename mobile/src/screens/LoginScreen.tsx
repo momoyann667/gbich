@@ -207,14 +207,7 @@ export const LoginScreen: React.FC = () => {
                     <Text style={styles.requiredTag}>REQUIS</Text>
                   </View>
 
-                  <View
-                    style={[
-                      styles.inputWrapper,
-                      Platform.OS === 'web' && ({
-                        boxShadow: '3px 3px 0px #121212',
-                      } as any),
-                    ]}
-                  >
+                  <View style={styles.inputWrapper}>
                     <Text style={styles.inputLeftIcon}>👤</Text>
                     <TextInput
                       style={[
@@ -249,14 +242,7 @@ export const LoginScreen: React.FC = () => {
                     </TouchableOpacity>
                   </View>
 
-                  <View
-                    style={[
-                      styles.inputWrapper,
-                      Platform.OS === 'web' && ({
-                        boxShadow: '3px 3px 0px #121212',
-                      } as any),
-                    ]}
-                  >
+                  <View style={styles.inputWrapper}>
                     <Text style={styles.inputLeftIcon}>🔒</Text>
                     <TextInput
                       style={[
@@ -285,7 +271,7 @@ export const LoginScreen: React.FC = () => {
                   </View>
                 </View>
 
-                {/* Case à cocher néo-brutaliste */}
+                {/* Case à cocher simple et épurée */}
                 <TouchableOpacity
                   activeOpacity={0.8}
                   onPress={() => setRememberMe(!rememberMe)}
@@ -295,9 +281,6 @@ export const LoginScreen: React.FC = () => {
                     style={[
                       styles.checkboxBox,
                       rememberMe && styles.checkboxActive,
-                      Platform.OS === 'web' && ({
-                        boxShadow: '3px 3px 0px #121212',
-                      } as any),
                     ]}
                   >
                     {rememberMe ? <Text style={styles.checkboxCheck}>✓</Text> : null}
@@ -345,15 +328,8 @@ export const LoginScreen: React.FC = () => {
                   )}
                 </TouchableOpacity>
 
-                {/* Encart Création de Compte néo-brutaliste */}
-                <View
-                  style={[
-                    styles.registerCard,
-                    Platform.OS === 'web' && ({
-                      boxShadow: '3px 3px 0px #121212',
-                    } as any),
-                  ]}
-                >
+                {/* Encart Création de Compte simple et épuré */}
+                <View style={styles.registerCard}>
                   <Text style={styles.registerCardPrompt}>
                     Pas encore membre de la bande ?
                   </Text>
@@ -613,15 +589,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
-    borderColor: '#121212',
+    borderColor: '#171416',
     borderRadius: 10,
     paddingHorizontal: 14,
     height: 50,
-    shadowColor: '#121212',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
   },
   inputLeftIcon: {
     fontSize: 16,
@@ -643,7 +614,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  // Checkbox néo-brutaliste
+  // Checkbox simple et épurée
   rememberRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -655,19 +626,14 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 2,
-    borderColor: '#121212',
+    borderColor: '#171416',
     backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#121212',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 2,
   },
   checkboxActive: {
     backgroundColor: '#F5222D',
-    borderColor: '#121212',
+    borderColor: '#171416',
   },
   checkboxCheck: {
     color: '#FFFFFF',
@@ -687,20 +653,20 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#F5222D',
     borderWidth: 3,
-    borderColor: '#121212',
+    borderColor: '#171416',
     borderRadius: 14,
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#121212',
-    shadowOffset: { width: 4, height: 4 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 5,
+    shadowColor: '#171416',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 4,
     marginTop: 6,
   },
   submitBtnPressed: {
-    transform: [{ translateX: 3 }, { translateY: 3 }],
+    transform: [{ translateX: 2 }, { translateY: 2 }],
     shadowOffset: { width: 0, height: 0 },
     elevation: 0,
   },
@@ -729,11 +695,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
-  // Carte Inscription néo-brutaliste
+  // Carte Inscription simple et épurée
   registerCard: {
     backgroundColor: '#F0EDEA',
     borderWidth: 2,
-    borderColor: '#121212',
+    borderColor: '#171416',
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 14,
@@ -741,11 +707,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 4,
     marginTop: 10,
-    shadowColor: '#121212',
-    shadowOffset: { width: 3, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 0,
-    elevation: 3,
   },
   registerCardPrompt: {
     fontFamily: Platform.OS === 'web' ? "'Inter', sans-serif" : 'System',

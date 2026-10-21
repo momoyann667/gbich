@@ -54,8 +54,9 @@ Consultez le catalogue détaillé : [Spécifications des Composants](./reference
 - **Barre de Navigation Flottante en Pilule** :
   - Conteneur arrondi (`border-radius: 9999px`), fond teinté avec flou d'arrière-plan (*glassmorphism*).
   - Onglet actif représenté par un cercle plein rouge `#F5222D` avec icône blanche contrastée.
-- **Champ de Recherche** :
-  - Bords arrondis 12px, loupe grise à gauche, fond `#FFFFFF` ou `#FAF9F8`.
+- **Champ de Recherche & Champs de Formulaire** :
+  - **Règle absolue** : Bords arrondis 10px-12px, loupe ou icône à gauche, fond `#FFFFFF` ou `#FAF9F8`, bordure nette 1.5px à 2px `#171416` (ou `#D4D0CC`).
+  - **INTERDICTION STRICTE** : JAMAIS d'ombres portées dures décalées à flou zéro (`shadowRadius: 0` ou `boxShadow: Xpx Ypx 0px`), ni de figures géométriques/équerres aux extrémités.
 - **Boutons Circulaires d'Action** :
   - Diamètre 40px, fond `#F5222D` ou `#A80F1C` (Baguette magique, Calques, Tag, Corbeille).
 - **Lignes Séparatrices Satiriques Tri-Color** :
@@ -100,6 +101,7 @@ Avant de valider tout nouvel écran ou composant :
 - [ ] Les couleurs utilisées proviennent exclusivement des tokens (`#F5222D`, `#171416`, `#A80F1C`, `#E8E5E2`).
 - [ ] La hiérarchie typographique respecte la règle : **Anton** (Titres), **Inter** (Textes), **Space Grotesk** (Contrôles).
 - [ ] Les boutons adoptent l'une des 4 variantes officielles (`Primary`, `Secondary`, `Inverted`, `Outlined`).
+- [ ] Les champs de formulaire et blocs arrondis sont SIMPLES (aucune ombre dure décalée à flou 0, aucune figure géométrique aux coins).
 - [ ] Le layout est centré et réactif sur grand écran via le conteneur responsive.
 - [ ] Les micro-interactions intègrent un retour tactile immédiat (rebond ressort sous 150ms).
 - [ ] Le contraste texte/fond respecte strictement le seuil WCAG 2.1 AA (4.5:1 minimum).

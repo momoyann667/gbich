@@ -79,12 +79,19 @@ Composant de navigation signature visible dans la charte :
 
 ---
 
-## 3. Champ de Recherche (Search Input)
+## 3. Champs de Formulaire & Recherche (Inputs & Controls)
 
-- **Conteneur** : Hauteur 48px, fond `#FFFFFF` ou `#FAF9F8`, bordure fine `#D4D0CC` (ou bordure accentuée `#A80F1C` en focus).
-- **Icône** : Loupe fine couleur `#8F8B85` à gauche (padding gauche 16px).
-- **Typographie** : `Inter` 14px, couleur texte `#171416`, placeholder `#8F8B85`.
-- **Rayon** : `border-radius: 12px`.
+- **Principe fondamental : Champs simples, nets et épurés.**
+- **RÈGLE STRICTE (ANTI-FIGURES GÉOMÉTRIQUES & COINS)** :
+  - **Ne JAMAIS ajouter de figures géométriques, encoches, équerres ou ombres portées dures décalées à flou zéro (`shadowRadius: 0` ou `boxShadow: Xpx Ypx 0px`) sur les champs de saisie, les blocs ou leurs extrémités.**
+  - Les ombres dures à rayon 0 créent des artefacts en équerre/carrés (`┌`, `┐`, `└`, `┘`) aux 4 coins sur le moteur de rendu Chromium sous Windows.
+  - Tous les champs (identifiant, email, mot de passe, recherche, cases à cocher) doivent être **SIMPLES ET ÉPURÉS** :
+    - Fond plein : `#FFFFFF` ou `#FAF9F8`
+    - Bordure nette uniforme : 1.5px à 2px en `#171416` (ou `#D4D0CC`)
+    - Coins arrondis nets : `border-radius: 10px` à `12px`
+    - **Aucune ombre portée décalée (zéro `boxShadow`, zéro `shadowRadius: 0`)**
+    - Hauteur ergonomique : 48px à 50px
+    - Icône d'accompagnement à gauche (padding 14px) et typographie `Inter` 14px.
 
 ---
 
