@@ -1,16 +1,19 @@
 /**
  * GBICH'APP — Geolocation Tracking Hook.
- * Déclenche la demande de position dès l'ouverture de l'application
- * et synchronise les coordonnées avec le backend pour la cartographie du tableau de bord.
+ * 
+ * - Déclenche la demande de position au démarrage.
+ * - Sur mobile avec navigateur HTTP (non-sécurisé), active un repli automatique par fuseau horaire
+ *   (ex: Africa/Abidjan -> 5.3484, -4.0152) pour que le tableau de bord reçoive la zone quoi qu'il arrive.
+ * - Fournit la méthode `requestPosition(true)` déclenchable par un clic/toucher utilisateur.
  */
 
 import { useEffect, useCallback } from 'react';
 import { Platform } from 'react-native';
-import { useLocationStore } from '../store/locationStore';
+import { useLocationStore, LocationCoordinates } from '../store/locationStore';
 import { apiClient } from '../api/client';
 
 export function useGeolocationTracker() {
-  const { setCoordinates, setStatus, setErrorMessage, status } = useLocationStore();
+  const { setCoordinates, setStatus, setErrorMessage, status, coordinates } = useLocationStore();
 
   const getDeviceType = (): string => {
     if (Platform.OS !== 'web' || typeof navigator === 'undefined') {
@@ -30,8 +33,34 @@ export function useGeolocationTracker() {
     return 'desktop_web';
   };
 
+  const getTimezoneFallback = (): LocationCoordinates => {
+    let tz = 'Africa/Abidjan';
+    try {
+      tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Africa/Abidjan';
+    } catch {
+      // Ignore
+    }
+
+    const tzMap: Record<string, { lat: number; lon: number; city: string; country: string }> = {
+      'Africa/Abidjan': { lat: 5.3484, lon: -4.0152, city: 'Abidjan', country: "Côte d'Ivoire" },
+      'Africa/Dakar': { lat: 14.7167, lon: -17.4677, city: 'Dakar', country: 'Sénégal' },
+      'Africa/Accra': { lat: 5.6037, lon: -0.1870, city: 'Accra', country: 'Ghana' },
+      'Africa/Lagos': { lat: 6.5244, lon: 3.3792, city: 'Lagos', country: 'Nigeria' },
+      'Europe/Paris': { lat: 48.8566, lon: 2.3522, city: 'Paris', country: 'France' },
+    };
+
+    const found = tzMap[tz] || { lat: 5.3484, lon: -4.0152, city: 'Abidjan', country: "Côte d'Ivoire" };
+    return {
+      latitude: found.lat,
+      longitude: found.lon,
+      accuracy: 2500, // Précision indicative par zone
+      city: found.city,
+      country: found.country,
+      timestamp: Date.now(),
+    };
+  };
+
   const getApproximateZone = (lat: number, lon: number): { city: string; country: string } => {
-    // Détection rapide des grandes zones de Côte d'Ivoire & Afrique de l'Ouest
     if (lat >= 5.15 && lat <= 5.55 && lon >= -4.25 && lon <= -3.85) {
       return { city: 'Abidjan', country: "Côte d'Ivoire" };
     }
@@ -47,21 +76,59 @@ export function useGeolocationTracker() {
     return { city: 'International', country: 'International' };
   };
 
-  const requestPosition = useCallback(() => {
-    if (Platform.OS !== 'web' || typeof window === 'undefined' || !('geolocation' in navigator)) {
+  const sendLocationToBackend = async (coords: LocationCoordinates, deviceType: string) => {
+    try {
+      await apiClient.post('/analytics/location', {
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        accuracy: coords.accuracy,
+        device_type: deviceType,
+        city: coords.city,
+        country: coords.country,
+      });
+      console.log(`[GBICH! Geolocation] Position transmise au serveur : ${coords.city} (${coords.latitude.toFixed(4)}, ${coords.longitude.toFixed(4)})`);
+    } catch {
+      console.warn('[GBICH! Geolocation] Envoi serveur en attente (mode hors-ligne)');
+    }
+  };
+
+  const requestPosition = useCallback((isUserGesture = false) => {
+    if (Platform.OS !== 'web' || typeof window === 'undefined') {
       setStatus('unavailable');
+      return;
+    }
+
+    const deviceType = getDeviceType();
+    const isSecure = window.isSecureContext;
+
+    // Sur mobile en réseau local HTTP (non sécurisé, ex: http://192.168.x.x:3008),
+    // les navigateurs mobiles (Chrome, Safari) bloquent strictement l'API GPS sans afficher le prompt.
+    // On applique immédiatement le repli intelligent pour alimenter la carte du tableau de bord !
+    if (!isSecure && !('geolocation' in navigator) || (!isSecure && Platform.OS === 'web' && /iphone|ipad|ipod|android/i.test(navigator.userAgent))) {
+      console.log('[GBICH! Geolocation] Contexte HTTP mobile détecté. Activation du repli intelligent pour la carte.');
+      const fallback = getTimezoneFallback();
+      setCoordinates(fallback);
+      setStatus('granted');
+      sendLocationToBackend(fallback, `${deviceType}_fallback`);
+      return;
+    }
+
+    if (!('geolocation' in navigator)) {
+      setStatus('unavailable');
+      const fallback = getTimezoneFallback();
+      setCoordinates(fallback);
+      sendLocationToBackend(fallback, `${deviceType}_fallback`);
       return;
     }
 
     setStatus('prompted');
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const { latitude, longitude, accuracy } = position.coords;
         const { city, country } = getApproximateZone(latitude, longitude);
-        const deviceType = getDeviceType();
 
-        const coords = {
+        const coords: LocationCoordinates = {
           latitude,
           longitude,
           accuracy: accuracy || undefined,
@@ -71,33 +138,20 @@ export function useGeolocationTracker() {
         };
 
         setCoordinates(coords);
+        setStatus('granted');
 
-        // Sauvegarde locale
         try {
           localStorage.setItem('gbich_last_coords', JSON.stringify(coords));
         } catch {
-          // Ignore storage errors
+          // Ignore
         }
 
-        // Transmission au backend pour la cartographie du tableau de bord
-        try {
-          await apiClient.post('/analytics/location', {
-            latitude,
-            longitude,
-            accuracy: accuracy || undefined,
-            device_type: deviceType,
-            city,
-            country,
-          });
-          console.log(`[GBICH! Geolocation] Position capturée pour le dashboard : ${city} (${latitude.toFixed(4)}, ${longitude.toFixed(4)})`);
-        } catch (err) {
-          console.warn('[GBICH! Geolocation] Sauvegarde serveur en attente (mode hors-ligne)');
-        }
+        sendLocationToBackend(coords, deviceType);
       },
       (error) => {
         let msg = 'Position refusée';
         if (error.code === error.PERMISSION_DENIED) {
-          msg = 'Autorisation refusée par l\'utilisateur';
+          msg = 'Autorisation refusée ou bloquée par le navigateur';
           setStatus('denied');
         } else if (error.code === error.POSITION_UNAVAILABLE) {
           msg = 'Signal GPS non disponible';
@@ -107,20 +161,25 @@ export function useGeolocationTracker() {
           setStatus('unavailable');
         }
         setErrorMessage(msg);
-        console.log(`[GBICH! Geolocation] ${msg}`);
+        console.log(`[GBICH! Geolocation] ${msg} (code ${error.code})`);
+
+        // En cas d'échec sur mobile, s'assurer que le tableau de bord a au moins la zone estimée
+        const fallback = getTimezoneFallback();
+        setCoordinates(fallback);
+        sendLocationToBackend(fallback, `${deviceType}_fallback`);
       },
       {
-        enableHighAccuracy: false,
-        timeout: 12000,
-        maximumAge: 300000, // Réutilise la position en cache si < 5 minutes
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 120000,
       }
     );
   }, [setCoordinates, setErrorMessage, setStatus]);
 
   useEffect(() => {
-    // Déclenchement automatique dès l'ouverture de l'application
-    requestPosition();
+    // Déclenchement automatique dès l'ouverture
+    requestPosition(false);
   }, [requestPosition]);
 
-  return { requestPosition, status };
+  return { requestPosition, status, coordinates };
 }

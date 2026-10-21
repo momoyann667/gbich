@@ -7,6 +7,7 @@ import { RootNavigator } from './src/navigation/RootNavigator';
 import { ResponsiveContainer } from './src/components/common/ResponsiveContainer';
 import { registerServiceWorker } from './src/utils/registerServiceWorker';
 import { PwaInstallPrompt } from './src/components/common/PwaInstallPrompt';
+import { GeolocationBanner } from './src/components/common/GeolocationBanner';
 import { useGeolocationTracker } from './src/hooks/useGeolocationTracker';
 
 function MainAppContent() {
@@ -16,6 +17,7 @@ function MainAppContent() {
   return (
     <ResponsiveContainer>
       <RootNavigator />
+      <GeolocationBanner />
       <PwaInstallPrompt />
       <StatusBar style="light" />
     </ResponsiveContainer>
