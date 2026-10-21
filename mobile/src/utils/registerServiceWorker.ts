@@ -7,6 +7,21 @@ import { Platform } from 'react-native';
 
 export function registerServiceWorker(): void {
   if (Platform.OS === 'web' && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+    // En développement, désactiver et purger immédiatement le cache pour garantir la fraîcheur du code
+    if (__DEV__) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (const reg of registrations) {
+          reg.unregister();
+        }
+      });
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => caches.delete(key));
+        });
+      }
+      return;
+    }
+
     window.addEventListener('load', () => {
       navigator.serviceWorker
         .register('/sw.js')

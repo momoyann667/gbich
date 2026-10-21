@@ -593,6 +593,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 14,
     height: 50,
+    overflow: 'hidden',
   },
   inputLeftIcon: {
     fontSize: 16,
