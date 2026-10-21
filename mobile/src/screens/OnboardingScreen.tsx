@@ -282,7 +282,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   };
 
   const handleSkip = () => {
-    handleFinish();
+    handleGoToLogin();
   };
 
   const handleFinish = () => {
@@ -296,108 +296,114 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   const handleGoToLogin = () => {
     if (navigation?.navigate) {
       (navigation as any).navigate('Login');
-    } else {
-      handleFinish();
+    } else if (onFinish) {
+      onFinish();
     }
   };
 
   return (
     <ComicHalftoneBackground>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-        bounces={false}
-      >
-        <Animated.View
-          style={[
-            styles.container,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }],
-            },
-          ]}
+      <View style={styles.screenWrapper}>
+        {/* ========================================================= */}
+        {/* HEADER STATIQUE TOUJOURS FIXE EN HAUT                     */}
+        {/* ========================================================= */}
+        <View style={styles.staticHeaderContainer}>
+          <View style={styles.staticHeaderInner}>
+            <View style={styles.topHeader}>
+              <Image
+                source={require('../../assets/logo.png')}
+                style={styles.headerLogo as any}
+                resizeMode="contain"
+              />
+
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={handleSkip}
+                style={[
+                  styles.skipButton,
+                  Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                ]}
+              >
+                <Text style={styles.skipText}>PASSER</Text>
+                <Text style={styles.skipArrow}>➔</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* BARRE DE PROGRESSION SEGMENTÉE (3 ÉTAPES) */}
+            <View style={styles.segmentedProgressRow}>
+              {/* Segment 1 : clignote rouge à l'étape 1, validé en noir ensuite */}
+              <Animated.View
+                style={[
+                  styles.progressSegment,
+                  currentStep > 1
+                    ? styles.segmentCompleted
+                    : currentStep === 1
+                    ? [
+                        styles.segmentActive,
+                        { opacity: progressBlinkAnim },
+                        Platform.OS === 'web' &&
+                          ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
+                      ]
+                    : styles.segmentInactive,
+                ]}
+              />
+              {/* Segment 2 : inactif à l'étape 1, clignote rouge à l'étape 2, validé en noir ensuite */}
+              <Animated.View
+                style={[
+                  styles.progressSegment,
+                  currentStep > 2
+                    ? styles.segmentCompleted
+                    : currentStep === 2
+                    ? [
+                        styles.segmentActive,
+                        { opacity: progressBlinkAnim },
+                        Platform.OS === 'web' &&
+                          ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
+                      ]
+                    : styles.segmentInactive,
+                ]}
+              />
+              {/* Segment 3 : inactif aux étapes 1 & 2, clignote rouge à l'étape 3 */}
+              <Animated.View
+                style={[
+                  styles.progressSegment,
+                  currentStep === 3
+                    ? [
+                        styles.segmentActive,
+                        { opacity: progressBlinkAnim },
+                        Platform.OS === 'web' &&
+                          ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
+                      ]
+                    : styles.segmentInactive,
+                ]}
+              />
+            </View>
+          </View>
+        </View>
+
+        {/* ========================================================= */}
+        {/* CONTENU QUI DÉFILE SOUS LE HEADER STATIQUE                */}
+        {/* ========================================================= */}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
         >
-          {/* ========================================================= */}
-          {/* 1. BARRE SUPÉRIEURE : LOGO GBICH! & BOUTON PASSER         */}
-          {/* ========================================================= */}
-          <View style={styles.topHeader}>
-            <Image
-              source={require('../../assets/logo.png')}
-              style={styles.headerLogo as any}
-              resizeMode="contain"
-            />
-
-            <TouchableOpacity
-              activeOpacity={0.8}
-              onPress={handleSkip}
-              style={[
-                styles.skipButton,
-                Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-              ]}
-            >
-              <Text style={styles.skipText}>PASSER</Text>
-              <Text style={styles.skipArrow}>➔</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* ========================================================= */}
-          {/* 2. BARRE DE PROGRESSION SEGMENTÉE (3 ÉTAPES)              */}
-          {/* ========================================================= */}
-          <View style={styles.segmentedProgressRow}>
-            {/* Segment 1 : clignote rouge tout le temps à l'étape 1, validé en noir ensuite */}
-            <Animated.View
-              style={[
-                styles.progressSegment,
-                currentStep > 1
-                  ? styles.segmentCompleted
-                  : currentStep === 1
-                  ? [
-                      styles.segmentActive,
-                      { opacity: progressBlinkAnim },
-                      Platform.OS === 'web' &&
-                        ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
-                    ]
-                  : styles.segmentInactive,
-              ]}
-            />
-            {/* Segment 2 : inactif à l'étape 1, clignote rouge tout le temps à l'étape 2, validé en noir ensuite */}
-            <Animated.View
-              style={[
-                styles.progressSegment,
-                currentStep > 2
-                  ? styles.segmentCompleted
-                  : currentStep === 2
-                  ? [
-                      styles.segmentActive,
-                      { opacity: progressBlinkAnim },
-                      Platform.OS === 'web' &&
-                        ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
-                    ]
-                  : styles.segmentInactive,
-              ]}
-            />
-            {/* Segment 3 : inactif aux étapes 1 & 2, clignote rouge tout le temps à l'étape 3 */}
-            <Animated.View
-              style={[
-                styles.progressSegment,
-                currentStep === 3
-                  ? [
-                      styles.segmentActive,
-                      { opacity: progressBlinkAnim },
-                      Platform.OS === 'web' &&
-                        ([styles.segmentActiveWebPulse, webIllustrationStyles.segmentActiveWebBlink] as any),
-                    ]
-                  : styles.segmentInactive,
-              ]}
-            />
-          </View>
-
-          {/* ========================================================= */}
-          {/* 3. CASE BD CENTRALE (DYNAMIQUE SELON L'ÉTAPE 1 OU 2)      */}
-          {/* ========================================================= */}
-          {currentStep === 1 ? (
-            /* ------------------ ÉTAPE 01 ------------------ */
-            <View style={styles.comicStepWrapper}>
+          <Animated.View
+            style={[
+              styles.container,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            {/* ========================================================= */}
+            {/* 3. CASE BD CENTRALE (DYNAMIQUE SELON L'ÉTAPE 1 OU 2)      */}
+            {/* ========================================================= */}
+            {currentStep === 1 ? (
+              /* ------------------ ÉTAPE 01 ------------------ */
+              <View style={styles.comicStepWrapper}>
               <View style={styles.stepTagBadge}>
                 <Text style={styles.stepTagText}>ÉTAPE 01 • CARICATURES & STRIPS</Text>
               </View>
@@ -877,40 +883,61 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
               </TouchableOpacity>
             </Animated.View>
 
-            {/* Bouton secondaire : Créer un compte ou entrer en invité */}
-            <TouchableOpacity
-              activeOpacity={0.85}
-              onPress={handleGoToLogin}
-              style={[
-                styles.guestBtn,
-                Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-              ]}
-            >
-              <Text style={styles.guestIcon}>👤</Text>
-              <Text style={styles.guestBtnText}>
-                {currentStep === 3
-                  ? 'Se connecter / Créer un compte'
-                  : 'Créer un compte ou entrer en invité'}
-              </Text>
-            </TouchableOpacity>
+            {/* Bouton secondaire : affiché uniquement à l'étape 3 */}
+            {currentStep === 3 ? (
+              <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={handleGoToLogin}
+                style={[
+                  styles.guestBtn,
+                  Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                ]}
+              >
+                <Text style={styles.guestIcon}>👤</Text>
+                <Text style={styles.guestBtnText}>
+                  Se connecter / Créer un compte
+                </Text>
+              </TouchableOpacity>
+            ) : null}
 
-            <Text style={styles.reassuranceText}>
-              {currentStep === 3
-                ? '✓ 100% Gratuit • Humour ivoirien certifié sans filtre'
-                : 'Accès gratuit et instantané • Aucune carte bancaire requise'}
-            </Text>
+            {currentStep === 3 ? (
+              <Text style={styles.reassuranceText}>
+                ✓ 100% Gratuit • Humour ivoirien certifié sans filtre
+              </Text>
+            ) : null}
           </View>
         </Animated.View>
       </ScrollView>
+    </View>
     </ComicHalftoneBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  screenWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
+  staticHeaderContainer: {
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 20,
+    backgroundColor: '#FAF7F2',
+  },
+  staticHeaderInner: {
+    width: '100%',
+    maxWidth: 440,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'web' ? 12 : 24,
+    paddingBottom: 8,
+    gap: 8,
+  },
   scrollContent: {
     flexGrow: 1,
+    width: '100%',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'web' ? 10 : 26,
+    paddingTop: 8,
     paddingBottom: Platform.OS === 'web' ? 32 : 40,
     alignItems: 'center',
     justifyContent: 'space-between',

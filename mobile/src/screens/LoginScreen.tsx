@@ -106,46 +106,50 @@ export const LoginScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardContainer}
       >
+        {/* ========================================================= */}
+        {/* EN-TÊTE STATIQUE FIXE EN HAUT                            */}
+        {/* ========================================================= */}
+        <View style={styles.staticHeaderContainer}>
+          <View style={styles.staticHeaderInner}>
+            <View style={styles.topHeader}>
+              <View style={styles.headerLeft}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={handleBack}
+                  style={[
+                    styles.backBtn,
+                    Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
+                  ]}
+                  accessibilityLabel="Retour"
+                >
+                  <Text style={styles.backBtnArrow}>←</Text>
+                </TouchableOpacity>
+
+                <Image
+                  source={require('../../assets/logo.png')}
+                  style={styles.headerLogo as any}
+                  resizeMode="contain"
+                />
+              </View>
+
+              <View style={styles.headerRight}>
+                <Text style={styles.headerLoginText}>LOGIN</Text>
+                <View style={styles.headerAvatarBadge}>
+                  <Text style={styles.headerAvatarIcon}>👤</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </View>
+
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
           <View style={styles.contentWrapper}>
-            {/* Section Supérieure : En-tête, Animation & Titre */}
+            {/* Section Supérieure : Animation & Titre */}
             <View style={styles.topSection}>
-              {/* ========================================================= */}
-              {/* 1. EN-TÊTE ÉPURÉ (Pas de bordure/carrés d'angle)           */}
-              {/* ========================================================= */}
-              <View style={styles.topHeader}>
-                <View style={styles.headerLeft}>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={handleBack}
-                    style={[
-                      styles.backBtn,
-                      Platform.OS === 'web' && ({ cursor: 'pointer' } as any),
-                    ]}
-                    accessibilityLabel="Retour"
-                  >
-                    <Text style={styles.backBtnArrow}>←</Text>
-                  </TouchableOpacity>
-
-                  <Image
-                    source={require('../../assets/logo.png')}
-                    style={styles.headerLogo as any}
-                    resizeMode="contain"
-                  />
-                </View>
-
-                <View style={styles.headerRight}>
-                  <Text style={styles.headerLoginText}>LOGIN</Text>
-                  <View style={styles.headerAvatarBadge}>
-                    <Text style={styles.headerAvatarIcon}>👤</Text>
-                  </View>
-                </View>
-              </View>
-
               {/* ========================================================= */}
               {/* 2. ANIMATION 2D COURSE-POURSUITE BURLESQUE (SVG)         */}
               {/* ========================================================= */}
@@ -367,12 +371,25 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  staticHeaderContainer: {
+    width: '100%',
+    alignItems: 'center',
+    zIndex: 20,
+    backgroundColor: '#FAF7F2',
+  },
+  staticHeaderInner: {
+    width: '100%',
+    maxWidth: 480,
+    paddingHorizontal: 16,
+    paddingTop: Platform.OS === 'web' ? 12 : 24,
+    paddingBottom: 6,
+  },
   scrollContent: {
     flexGrow: 1,
     minHeight: '100%',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'web' ? 12 : 24,
+    paddingTop: 8,
     paddingBottom: Platform.OS === 'web' ? 20 : 32,
     justifyContent: 'space-between',
   },
