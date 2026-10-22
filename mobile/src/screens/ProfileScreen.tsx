@@ -6,6 +6,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity } from 'react-native';
 import { useAuthStore } from '../store/authStore';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
+import { forceAppUpdate } from '../utils/registerServiceWorker';
 
 interface ProfileScreenProps {
   navigation?: any;
@@ -83,6 +84,20 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             <Text style={styles.menuIcon}>🌍</Text>
             <Text style={styles.menuTitle}>Langue & Humour Nouchi</Text>
             <Text style={styles.menuArrow}>➔</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.menuItem}
+            activeOpacity={0.8}
+            onPress={() => forceAppUpdate()}
+          >
+            <Text style={styles.menuIcon}>🔄</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.menuTitle}>Mise à Jour de l'Application</Text>
+              <Text style={styles.versionSubText}>Version 1.0.2 • Toujours synchronisée</Text>
+            </View>
+            <View style={styles.badgeUpdatePill}>
+              <Text style={styles.badgeUpdateText}>ACTUALISER</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -293,5 +308,25 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     fontFamily: Platform.OS === 'web' ? 'Anton, sans-serif' : 'System',
     letterSpacing: 0.5,
+  },
+  versionSubText: {
+    fontSize: 10.5,
+    color: '#777777',
+    fontFamily: Platform.OS === 'web' ? 'Inter, sans-serif' : 'System',
+    marginTop: 2,
+  },
+  badgeUpdatePill: {
+    backgroundColor: '#FFF1F0',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 9999,
+    borderWidth: 1,
+    borderColor: '#F5222D',
+  },
+  badgeUpdateText: {
+    color: '#F5222D',
+    fontSize: 9.5,
+    fontWeight: '800',
+    fontFamily: Platform.OS === 'web' ? '"Space Grotesk", sans-serif' : 'System',
   },
 });

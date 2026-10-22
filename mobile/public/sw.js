@@ -1,8 +1,9 @@
 /**
- * GBICH'APP — Service Worker pour PWA Offline & Cache
+ * GBICH'APP — Service Worker pour PWA Offline, Cache Intelligent & Mises à Jour Automatiques.
+ * Version: v1.0.2
  */
 
-const CACHE_NAME = 'gbich-app-v1.0.0';
+const CACHE_NAME = 'gbich-app-v1.0.2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -11,24 +12,25 @@ const STATIC_ASSETS = [
   '/assets/favicon.png'
 ];
 
-// Installation: Mise en cache des ressources statiques du socle
+// Installation: Mise en cache préalable et activation immédiate
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[Service Worker] Pré-mise en cache du shell applicatif');
+      console.log('[Service Worker] Pré-mise en cache du shell applicatif:', CACHE_NAME);
       return cache.addAll(STATIC_ASSETS);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activation: Nettoyage des anciennes versions de cache
+// Activation: Purge radicale de TOUS les anciens caches et prise de contrôle instantanée
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keyList) => {
       return Promise.all(
         keyList.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[Service Worker] Suppression de l\'ancien cache:', key);
+            console.log('[Service Worker] Suppression de l\'ancien cache obsolète:', key);
             return caches.delete(key);
           }
         })
@@ -37,11 +39,33 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Écoute des messages clients pour forcer l'activation
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Interception des requêtes réseau
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // 1. Requêtes API (/api/): Stratégie Network-first avec repli sur cache
+  // 1. DÉVELOPPEMENT LOCAL (Metro / Expo / HMR) :
+  // Ne JAMAIS cacher les fichiers sur le serveur de dev port 3008 ou en live reload
+  if (
+    url.port === '3008' ||
+    url.port === '8081' ||
+    url.hostname === 'localhost' ||
+    url.hostname === '127.0.0.1' ||
+    url.pathname.includes('_expo') ||
+    url.pathname.includes('hot=true') ||
+    url.searchParams.has('dev')
+  ) {
+    // Passer directement au réseau natif sans interférence de cache
+    return;
+  }
+
+  // 2. REQUÊTES API (/api/) : Network-first avec repli cache hors-ligne
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(
       fetch(event.request)
@@ -75,44 +99,54 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // 2. Requêtes statiques et navigation: Cache-first avec mise à jour en tâche de fond
+  // 3. NAVIGATION (HTML principal) & FICHIERS JS / BUNDLES :
+  // STRATÉGIE NETWORK-FIRST ABSOLUE pour que l'utilisateur reçoive TOUJOURS la dernière version !
+  if (
+    event.request.mode === 'navigate' ||
+    url.pathname.endsWith('.js') ||
+    url.pathname.endsWith('.css') ||
+    url.pathname.endsWith('.bundle')
+  ) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, copy);
+            });
+          }
+          return networkResponse;
+        })
+        .catch(async () => {
+          // Si pas de réseau (mode avion, tunnel, hors-ligne) : repli sur le cache local
+          const cached = await caches.match(event.request);
+          if (cached) return cached;
+          if (event.request.mode === 'navigate') {
+            return (await caches.match('/')) || (await caches.match('/index.html'));
+          }
+        })
+    );
+    return;
+  }
+
+  // 4. RESSOURCES STATIQUES (Images, logos, polices, favicons) :
+  // Stale-While-Revalidate : réponse rapide du cache + mise à jour en tâche de fond
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        // Rafraîchir en arrière-plan (stale-while-revalidate)
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, networkResponse);
-              });
-            }
-          })
-          .catch(() => {});
-        return cachedResponse;
-      }
-
-      return fetch(event.request).then((networkResponse) => {
-        if (
-          !networkResponse ||
-          networkResponse.status !== 200 ||
-          networkResponse.type !== 'basic'
-        ) {
+      const fetchPromise = fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const copy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, copy);
+            });
+          }
           return networkResponse;
-        }
+        })
+        .catch(() => {});
 
-        const responseToCache = networkResponse.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
-        return networkResponse;
-      }).catch(() => {
-        // Si c'est une requête de page HTML, renvoyer la racine en cache
-        if (event.request.mode === 'navigate') {
-          return caches.match('/');
-        }
-      });
+      return cachedResponse || fetchPromise;
     })
   );
 });
