@@ -10,6 +10,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { FeedHomeScreen } from '../screens/FeedHomeScreen';
 import { KiosqueScreen } from '../screens/KiosqueScreen';
@@ -29,6 +30,11 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export const MainTabNavigator: React.FC = () => {
+  const insets = useSafeAreaInsets();
+  // Marge inférieure dynamique assurant la visibilité complète des libellés sur tous smartphones
+  const bottomInset = Math.max(insets.bottom, 16);
+  const barHeight = Platform.OS === 'ios' ? 88 : Math.max(76, 56 + bottomInset);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -38,17 +44,25 @@ export const MainTabNavigator: React.FC = () => {
           backgroundColor: '#FFFFFF',
           borderTopColor: '#E8E5E2',
           borderTopWidth: 1.5,
-          height: Platform.OS === 'ios' ? 84 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+          height: barHeight,
+          paddingBottom: bottomInset,
           paddingTop: 8,
           ...Platform.select({
             web: {
-              boxShadow: '0px -2px 10px rgba(0,0,0,0.06)',
+              boxShadow: '0px -3px 12px rgba(0,0,0,0.07)',
+              // Prise en compte de la barre de geste / safe-area mobile et PWA
+              height: 'calc(62px + max(16px, env(safe-area-inset-bottom, 16px)))',
+              paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))',
             } as any,
             default: {
-              elevation: 8,
+              elevation: 10,
             },
           }),
+        },
+        tabBarItemStyle: {
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingTop: 2,
         },
         tabBarActiveTintColor: GBICH_COLORS.primary, // #F5222D
         tabBarInactiveTintColor: '#4A4543',
@@ -57,6 +71,8 @@ export const MainTabNavigator: React.FC = () => {
           fontWeight: '700',
           fontFamily: Platform.OS === 'web' ? '"Space Grotesk", sans-serif' : 'System',
           letterSpacing: 0.2,
+          marginTop: 2,
+          marginBottom: 4,
         },
       }}
     >

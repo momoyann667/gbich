@@ -633,7 +633,7 @@ export const FeedHomeScreen: React.FC<FeedHomeScreenProps> = ({ navigation }) =>
             </View>
           </View>
 
-          <View style={{ height: 24 }} />
+          <View style={{ height: 50 }} />
         </ScrollView>
 
         {/* ========================================================= */}
