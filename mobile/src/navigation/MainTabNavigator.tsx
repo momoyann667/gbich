@@ -1,15 +1,18 @@
 /**
  * GBICH'APP — Main Tab Navigator (5 Onglets Satiriques).
- * 1. Accueil (actif avec accent rouge & flamme satirique)
- * 2. Kiosque (accès aux numéros, strips et archives du journal)
- * 3. Vidéos (capsules humoristiques, micro-trottoirs et sketchs)
- * 4. Jeux (quiz satiriques, jeu des 7 erreurs, mots croisés afro-politiques)
- * 5. Mon compte (espace profil vanneur, gestion des Gbich Coins et favoris)
+ *
+ * Utilise un Custom TabBar 100% maîtrisé pour garantir :
+ * - Aucune troncature des textes ("Accueil", "Kiosque", etc.) sur TOUS smartphones
+ * - Respect dynamique des zones de sécurité (safe area insets / barre de gestes mobile)
+ * - Accent rouge satirique #F5222D et icône de flamme sur Accueil actif
  */
 
 import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Platform } from 'react-native';
+import {
+  createBottomTabNavigator,
+  BottomTabBarProps,
+} from '@react-navigation/bottom-tabs';
+import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { FeedHomeScreen } from '../screens/FeedHomeScreen';
@@ -29,123 +32,156 @@ export type MainTabParamList = {
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-export const MainTabNavigator: React.FC = () => {
-  const insets = useSafeAreaInsets();
-  // Marge inférieure dynamique assurant la visibilité complète des libellés sur tous smartphones
-  const bottomInset = Math.max(insets.bottom, 16);
-  const barHeight = Platform.OS === 'ios' ? 88 : Math.max(76, 56 + bottomInset);
+// Configuration des 5 onglets avec leurs icônes et intitulés
+const TAB_CONFIG: Record<
+  string,
+  { label: string; activeIcon: keyof typeof Ionicons.glyphMap; inactiveIcon: keyof typeof Ionicons.glyphMap }
+> = {
+  Home: {
+    label: 'Accueil',
+    activeIcon: 'flame',
+    inactiveIcon: 'flame-outline',
+  },
+  Kiosk: {
+    label: 'Kiosque',
+    activeIcon: 'book',
+    inactiveIcon: 'book-outline',
+  },
+  Videos: {
+    label: 'Vidéos',
+    activeIcon: 'play-circle',
+    inactiveIcon: 'play-circle-outline',
+  },
+  Games: {
+    label: 'Jeux',
+    activeIcon: 'game-controller',
+    inactiveIcon: 'game-controller-outline',
+  },
+  Profile: {
+    label: 'Compte',
+    activeIcon: 'person-circle',
+    inactiveIcon: 'person-circle-outline',
+  },
+};
 
+/**
+ * Composant Custom TabBar garantissant une visibilité parfaite
+ * et une marge inférieure généreuse au-dessus de la barre de geste du téléphone.
+ */
+const CustomTabBar: React.FC<BottomTabBarProps> = ({ state, navigation }) => {
+  const insets = useSafeAreaInsets();
+  // Marge inférieure de sécurité : au moins 22px pour dégager totalement les textes
+  const bottomInset = Math.max(insets.bottom, 22);
+
+  return (
+    <View style={[styles.tabBarContainer, { paddingBottom: bottomInset }]}>
+      {state.routes.map((route, index) => {
+        const isFocused = state.index === index;
+        const config = TAB_CONFIG[route.name] || {
+          label: route.name,
+          activeIcon: 'ellipse',
+          inactiveIcon: 'ellipse-outline',
+        };
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const color = isFocused ? GBICH_COLORS.primary : '#4A4543';
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            activeOpacity={0.75}
+            onPress={onPress}
+            style={styles.tabButton}
+          >
+            <Ionicons
+              name={isFocused ? config.activeIcon : config.inactiveIcon}
+              size={23}
+              color={color}
+            />
+            <Text
+              style={[
+                styles.tabLabel,
+                { color },
+                isFocused && styles.tabLabelActive,
+              ]}
+              numberOfLines={1}
+            >
+              {config.label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
+
+export const MainTabNavigator: React.FC = () => {
   return (
     <Tab.Navigator
       initialRouteName="Home"
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E8E5E2',
-          borderTopWidth: 1.5,
-          height: barHeight,
-          paddingBottom: bottomInset,
-          paddingTop: 8,
-          ...Platform.select({
-            web: {
-              boxShadow: '0px -3px 12px rgba(0,0,0,0.07)',
-              // Prise en compte de la barre de geste / safe-area mobile et PWA
-              height: 'calc(62px + max(16px, env(safe-area-inset-bottom, 16px)))',
-              paddingBottom: 'max(16px, env(safe-area-inset-bottom, 16px))',
-            } as any,
-            default: {
-              elevation: 10,
-            },
-          }),
-        },
-        tabBarItemStyle: {
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingTop: 2,
-        },
-        tabBarActiveTintColor: GBICH_COLORS.primary, // #F5222D
-        tabBarInactiveTintColor: '#4A4543',
-        tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '700',
-          fontFamily: Platform.OS === 'web' ? '"Space Grotesk", sans-serif' : 'System',
-          letterSpacing: 0.2,
-          marginTop: 2,
-          marginBottom: 4,
-        },
       }}
     >
-      <Tab.Screen
-        name="Home"
-        component={FeedHomeScreen}
-        options={{
-          tabBarLabel: "Accueil",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons
-              name={focused ? 'flame' : 'flame-outline'}
-              size={size || 22}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Kiosk"
-        component={KiosqueScreen}
-        options={{
-          tabBarLabel: "Kiosque",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons
-              name={focused ? 'book' : 'book-outline'}
-              size={size || 22}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Videos"
-        component={VideosScreen}
-        options={{
-          tabBarLabel: "Vidéos",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons
-              name={focused ? 'play-circle' : 'play-circle-outline'}
-              size={size || 22}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Games"
-        component={GamesHubScreen}
-        options={{
-          tabBarLabel: "Jeux",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons
-              name={focused ? 'game-controller' : 'game-controller-outline'}
-              size={size || 22}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: "Compte",
-          tabBarIcon: ({ color, focused, size }) => (
-            <Ionicons
-              name={focused ? 'person-circle' : 'person-circle-outline'}
-              size={size || 22}
-              color={color}
-            />
-          ),
-        }}
-      />
+      <Tab.Screen name="Home" component={FeedHomeScreen} />
+      <Tab.Screen name="Kiosk" component={KiosqueScreen} />
+      <Tab.Screen name="Videos" component={VideosScreen} />
+      <Tab.Screen name="Games" component={GamesHubScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1.5,
+    borderTopColor: '#E8E5E2',
+    paddingTop: 8,
+    alignItems: 'flex-start',
+    width: '100%',
+    ...Platform.select({
+      web: {
+        boxShadow: '0px -3px 12px rgba(0,0,0,0.07)',
+      } as any,
+      default: {
+        elevation: 10,
+      },
+    }),
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 2,
+    ...Platform.select({
+      web: {
+        cursor: 'pointer',
+      } as any,
+    }),
+  },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: '700',
+    fontFamily: Platform.OS === 'web' ? '"Space Grotesk", sans-serif' : 'System',
+    letterSpacing: 0.2,
+    marginTop: 3,
+    textAlign: 'center',
+  },
+  tabLabelActive: {
+    fontWeight: '800',
+  },
+});
