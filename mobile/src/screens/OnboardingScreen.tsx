@@ -13,6 +13,7 @@ import {
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
 import { ThreeDSphere } from '../components/common/ThreeDSphere';
 import { injectWebFonts } from '../utils/loadFonts';
+import { useAuthStore } from '../store/authStore';
 
 interface OnboardingScreenProps {
   navigation?: any;
@@ -286,6 +287,7 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({
   };
 
   const handleFinish = () => {
+    useAuthStore.getState().setGuestMode();
     if (onFinish) {
       onFinish();
     } else if (navigation?.navigate) {

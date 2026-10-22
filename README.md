@@ -253,3 +253,52 @@ npx expo export -p web
 3. Test Hors Connexion :
    - Dans l'onglet **Réseau (Network)**, activez la case **Offline**.
    - Rafraîchissez la page : le shell applicatif et les ressources statiques continuent de fonctionner grâce au Service Worker.
+
+
+# Aller dans le dossier mobile
+cd c:\Users\habib\Desktop\2026\gbich_app\mobile
+
+# Lancer Expo sur le port 3008
+npx expo start --port 3008
+ 
+# Aller dans le dossier backend
+cd c:\Users\habib\Desktop\2026\gbich_app\backend
+
+---
+
+## 10. Écran d'Accueil Satirique & Barre de Navigation (5 Onglets)
+
+L'écran d'accueil (`FeedHomeScreen`) reproduit fidèlement la maquette `documentation/accueil.png` :
+- **Barre de Navigation Inférieure (5 Onglets)** :
+  1. `Accueil` : Actif avec accent rouge `#F5222D` et flamme satirique 🔥
+  2. `Kiosque` : Accès aux numéros, strips et archives du journal 📖
+  3. `Vidéos` : Capsules humoristiques, micro-trottoirs et sketchs ▶
+  4. `Jeux` : Quiz satiriques, jeu des 7 erreurs, mots croisés afro-politiques 🎮
+  5. `Compte` : Espace profil vanneur, gestion des Gbich Coins et favoris 👤
+- **Header Dynamique (Invité vs Connecté)** :
+  - **Mode Invité** (depuis l'Étape 3 Onboarding via "DÉMARRER L'AVENTURE GBICH") : Bouton rouge en haut à droite `Se connecter` redirigeant vers `LoginScreen` (avec lien d'inscription gratuit en bas).
+  - **Mode Connecté** : Solde d'enjaillement (450 Coins), loupe de recherche déroulante, cloche de notification avec pastille rouge et avatar du vanneur.
+- **Ruban Défilant Wolo Flash & Solde d'Enjaillement** :
+  - Bandeau rouge d'actu caustique animé : `🔥 TCHÔÔ ! Y'A DRAP : LE GOMBO A AUGMENTÉ...` avec météo Abidjan et bouton mégaphone.
+  - Carte du solde d'enjaillement avec pièce 3D, montant `1 250 COINS` et bouton `✚ Recharger`.
+- **La « Une » du Vendredi (Hero Satirique)** :
+  - Grande carte façon journal imprimé avec badge `N° 342 • VENDREDI CHOC` et `EXCLUSIF`.
+  - Personnage Cauphy Gombo en costume vert et cigare dans un cadre à trame comic halftone, sticker incliné `GBICH!` et compteur de vues.
+  - Titre néo-brutaliste : `AFFAIRE DE VISAS & CHICOTTE : LES VOYAGEURS DU DJASSA !`.
+  - Statistiques d'engagement (`4.8k fous rires`, `382 clashs`, `Lecture : 2 min`) et bouton `📖 LIRE LE STRIP CHOC ⚡`.
+- **Filtres Thématiques & Strips Croustillants** :
+  - Badges tactiles : `Tout chaud 🔥`, `Strips Nouchi 📚`, `Scandales 🚨`, `Caricatures 🎨`, `Micro-Trottoir 🎤`.
+  - Cartes BD : `Cauphy Gombo au Tribunal` (Gratuit), `Jo Bleck contre les Gnambros` (5 Coins), `Sergent Gazeur & la Circulation` (Gratuit).
+- **Punchline Vidéo & Défi Quotidien (Jeux)** :
+  - Capsule 45s Plateau : « Tu préfères l'amour sincère ou le garba chaud ? ».
+  - Encart interactif du Quiz des 7 erreurs d'Abidjan avec récompense `+50 Coins`.
+- **La Vanne de la Communauté** :
+  - Bulle de BD avec punchline de lecteur d'Abidjan (Yopougon Side) par `@KouadioLeMoqueur`.
+
+
+# Activer l'environnement virtuel Python
+.\.venv\Scripts\Activate.ps1
+
+# Lancer le serveur FastAPI avec rechargement automatique
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
