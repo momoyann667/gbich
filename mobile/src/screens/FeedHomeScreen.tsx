@@ -29,6 +29,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { GBICH_COLORS } from '../theme/tokens';
 import { useAuthStore } from '../store/authStore';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
+import { GbichHeader } from '../components/common/GbichHeader';
 
 interface FeedHomeScreenProps {
   navigation?: any;
@@ -110,86 +111,14 @@ export const FeedHomeScreen: React.FC<FeedHomeScreenProps> = ({ navigation }) =>
         {/* ========================================================= */}
         {/* 1. HEADER & ALERTE SATIRIQUE                              */}
         {/* ========================================================= */}
-        <View style={styles.topHeader}>
-          <View style={styles.headerLeft}>
-            <Image
-              source={require('../../assets/logo.png')}
-              style={styles.logoImage}
-              resizeMode="contain"
-            />
-            <View style={styles.headerTitleWrap}>
-              <Text style={styles.headerAccueilTitle}>ACCUEIL</Text>
-            </View>
-          </View>
-
-          <View style={styles.headerRight}>
-            {/* Si invité ou non connecté : Bouton "Se connecter" proéminent */}
-            {!isAuthenticated || isGuest ? (
-              <TouchableOpacity
-                style={styles.connectBtn}
-                activeOpacity={0.85}
-                onPress={handleGoToLogin}
-              >
-                <Ionicons
-                  name="person-circle-outline"
-                  size={18}
-                  color="#FFFFFF"
-                  style={styles.connectBtnIcon}
-                />
-                <Text style={styles.connectBtnText}>Se connecter</Text>
-              </TouchableOpacity>
-            ) : (
-              // Si connecté : Solde de coins, recherche, notifications & avatar
-              <View style={styles.authHeaderCluster}>
-                {/* Badge Coins */}
-                <TouchableOpacity
-                  style={styles.headerCoinPill}
-                  activeOpacity={0.8}
-                  onPress={() => setIsRechargeModalOpen(true)}
-                >
-                  <Text style={styles.coinPillIcon}>🪙</Text>
-                  <Text style={styles.coinPillAmount}>450</Text>
-                </TouchableOpacity>
-
-                {/* Loupe recherche */}
-                <TouchableOpacity
-                  style={styles.headerIconBtn}
-                  activeOpacity={0.75}
-                  onPress={() => setIsSearchOpen(!isSearchOpen)}
-                >
-                  <Ionicons name="search" size={20} color="#171416" />
-                </TouchableOpacity>
-
-                {/* Cloche notification avec point rouge */}
-                <TouchableOpacity
-                  style={styles.headerIconBtn}
-                  activeOpacity={0.75}
-                  onPress={() => {
-                    if (Platform.OS === 'web') {
-                      window.alert('🔔 3 nouvelles vannes croustillantes au Djassa !');
-                    } else {
-                      Alert.alert('Notifications', '3 nouvelles vannes croustillantes au Djassa !');
-                    }
-                  }}
-                >
-                  <Ionicons name="notifications-outline" size={20} color="#171416" />
-                  <View style={styles.notifDot} />
-                </TouchableOpacity>
-
-                {/* Avatar utilisateur */}
-                <TouchableOpacity
-                  style={styles.userAvatarCircle}
-                  activeOpacity={0.85}
-                  onPress={() => navigation?.navigate('Profile')}
-                >
-                  <Text style={styles.userAvatarText}>
-                    {user?.username ? user.username.substring(0, 2).toUpperCase() : 'GB'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            )}
-          </View>
-        </View>
+        <GbichHeader
+          pageTitle="ACCUEIL"
+          navigation={navigation}
+          showCoins={true}
+          onCoinsPress={() => setIsRechargeModalOpen(true)}
+          showSearch={true}
+          onSearchPress={() => setIsSearchOpen(!isSearchOpen)}
+        />
 
         {/* Barre de recherche déroulante */}
         {isSearchOpen && (

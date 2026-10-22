@@ -6,13 +6,16 @@ import React from 'react';
 import { View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { GBICH_COLORS } from '../theme/tokens';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
+import { GbichHeader } from '../components/common/GbichHeader';
 
-export const KiosqueScreen: React.FC = () => {
+export const KiosqueScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   return (
     <ComicHalftoneBackground>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        {/* En-tête Kiosque */}
-        <View style={styles.header}>
+      <View style={styles.screenWrapper}>
+        <GbichHeader pageTitle="KIOSQUE" navigation={navigation} />
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+          {/* En-tête Kiosque */}
+          <View style={styles.header}>
           <View style={styles.badgeRow}>
             <View style={styles.pillBadge}>
               <Text style={styles.pillBadgeText}>ARCHIVES & ÉDITIONS SPÉCIALES</Text>
@@ -63,14 +66,20 @@ export const KiosqueScreen: React.FC = () => {
           </View>
         </View>
       </ScrollView>
+    </View>
     </ComicHalftoneBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  screenWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
   container: {
     padding: 16,
-    paddingTop: 24,
+    paddingTop: 16,
     paddingBottom: 70,
     alignItems: 'center',
     width: '100%',

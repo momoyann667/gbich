@@ -5,11 +5,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
+import { GbichHeader } from '../components/common/GbichHeader';
 
-export const VideosScreen: React.FC = () => {
+export const VideosScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   return (
     <ComicHalftoneBackground>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.screenWrapper}>
+        <GbichHeader pageTitle="VIDÉOS" navigation={navigation} />
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* En-tête Vidéos */}
         <View style={styles.header}>
           <View style={styles.badgeRow}>
@@ -64,14 +67,20 @@ export const VideosScreen: React.FC = () => {
           </View>
         </View>
       </ScrollView>
+    </View>
     </ComicHalftoneBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  screenWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
   container: {
     padding: 16,
-    paddingTop: 24,
+    paddingTop: 16,
     paddingBottom: 70,
     alignItems: 'center',
     width: '100%',

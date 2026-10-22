@@ -5,11 +5,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, Platform, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { ComicHalftoneBackground } from '../components/common/ComicHalftoneBackground';
+import { GbichHeader } from '../components/common/GbichHeader';
 
-export const GamesHubScreen: React.FC = () => {
+export const GamesHubScreen: React.FC<{ navigation?: any }> = ({ navigation }) => {
   return (
     <ComicHalftoneBackground>
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <View style={styles.screenWrapper}>
+        <GbichHeader pageTitle="JEUX" navigation={navigation} />
+        <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
         {/* En-tête Jeux */}
         <View style={styles.header}>
           <View style={styles.badgeRow}>
@@ -61,15 +64,21 @@ export const GamesHubScreen: React.FC = () => {
             <Text style={styles.modeDesc}>Le test sans pitié</Text>
           </TouchableOpacity>
         </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </ComicHalftoneBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  screenWrapper: {
+    flex: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
   container: {
     padding: 16,
-    paddingTop: 24,
+    paddingTop: 16,
     paddingBottom: 70,
     alignItems: 'center',
     width: '100%',
